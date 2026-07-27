@@ -1,0 +1,184 @@
+{
+  "lhv.config.title": "Sublime Damage Display Config",
+  "lhv.hub.player": "Player Damage Settings",
+  "lhv.hub.entity": "Entity Damage Settings",
+  "lhv.hub.env": "Environment Damage Settings",
+  "lhv.hub.global": "Global Settings",
+  "lhv.hub.back": "Back",
+
+  "lhv.config.player.title": "Player Damage Settings",
+  "lhv.config.entity.title": "Entity Damage Settings",
+  "lhv.config.env.title": "Environment Damage Settings",
+  "lhv.config.global.title": "Global Settings",
+
+  "yacl3.config.lhv:global_config.category.global": "§eGlobal§r",
+
+  "yacl3.config.lhv:player_config.category.general": "§dGeneral§r",
+  "yacl3.config.lhv:player_config.category.format": "§bFormat§r",
+  "yacl3.config.lhv:player_config.category.custom": "§aCustom§r",
+
+  "yacl3.config.lhv:entity_config.category.general": "§dGeneral§r",
+  "yacl3.config.lhv:entity_config.category.format": "§bFormat§r",
+  "yacl3.config.lhv:entity_config.category.custom": "§aCustom§r",
+
+  "yacl3.config.lhv:env_config.category.general": "§dGeneral§r",
+  "yacl3.config.lhv:env_config.category.format": "§bFormat§r",
+  "yacl3.config.lhv:env_config.category.custom": "§aCustom§r",
+
+  "lhv.config.renderMode": "Display Behavior",
+  "lhv.config.renderMode.desc": "How damage numbers are displayed",
+  "yacl3.config.enum.RenderMode.merge": "Merge",
+  "yacl3.config.enum.RenderMode.merge.desc": "§6Merge§r: All damage dealt to the same entity is summed into one number",
+  "yacl3.config.enum.RenderMode.latest": "Latest",
+  "yacl3.config.enum.RenderMode.latest.desc": "§6Latest§r: Only shows the most recent damage dealt to an entity",
+  "yacl3.config.enum.RenderMode.all": "All",
+  "yacl3.config.enum.RenderMode.all.desc": "§6All§r: Shows every instance of damage dealt to an entity",
+
+  "lhv.config.minVisibleRange": "Min Visible Range",
+  "lhv.config.minVisibleRange.desc": "Minimum distance for damage numbers to be visible (meters)",
+
+  "lhv.config.maxVisibleRange": "Max Visible Range",
+  "lhv.config.maxVisibleRange.desc": "Maximum distance for damage numbers to be visible (meters)",
+
+  "lhv.config.trackEntity": "Track Entity",
+  "lhv.config.trackEntity.desc": "Whether damage numbers follow the entity as it moves",
+
+  "lhv.config.retainWhenOffScreen": "Retain Off-Screen",
+  "lhv.config.retainWhenOffScreen.desc": "Whether damage numbers remain visible after the entity moves off-screen",
+
+  "lhv.config.displayDuration": "Display Duration",
+  "lhv.config.displayDuration.desc": "How long damage numbers persist (game ticks)",
+
+  "lhv.config.maxReceiveRange": "Receive Range",
+  "lhv.config.maxReceiveRange.desc": "Maximum range for receiving damage data (meters)",
+
+  "lhv.config.screenOffsetRangeX": "Screen Offset (Horizontal)",
+  "lhv.config.screenOffsetRangeX.desc": "Range of random horizontal offset on screen (pixels)",
+
+  "lhv.config.screenOffsetRangeY": "Screen Offset (Vertical)",
+  "lhv.config.screenOffsetRangeY.desc": "Range of random vertical offset on screen (pixels)",
+
+  "lhv.config.offsetRangeX": "3D Offset Range (X)",
+  "lhv.config.offsetRangeX.desc": "Range of random world offset along the X axis (meters)",
+
+  "lhv.config.offsetRangeZ": "3D Offset Range (Y)",
+  "lhv.config.offsetRangeZ.desc": "Range of random world offset along the Z axis (meters)",
+
+  "lhv.config.offsetRangeY": "3D Offset Range (Z)",
+  "lhv.config.offsetRangeY.desc": "Range of random world offset along the Y axis (meters)",
+
+  "lhv.config.formatMode": "Formatting Method",
+  "lhv.config.formatMode.desc": "How damage numbers are formatted",
+  "yacl3.config.enum.FormatMode.scientific": "Scientific",
+  "yacl3.config.enum.FormatMode.scientific.desc": "§6Scientific§r: Always uses scientific notation for large/small numbers",
+  "yacl3.config.enum.FormatMode.unit": "Unit Suffix",
+  "yacl3.config.enum.FormatMode.unit.desc": "§6Unit Suffix§r: Always uses unit suffixes (K/M/B/T) for large numbers",
+  "yacl3.config.enum.FormatMode.auto": "Auto",
+  "yacl3.config.enum.FormatMode.auto.desc": "§6Auto§r: Automatically chooses the best format based on the value",
+  "yacl3.config.enum.FormatMode.raw": "Raw",
+  "yacl3.config.enum.FormatMode.raw.desc": "§6Raw§r: Displays the raw value, only affected by decimal places",
+
+  "lhv.config.retainDecimalPlaces": "Decimal Places",
+  "lhv.config.retainDecimalPlaces.desc": "Number of decimal places to display",
+
+  "lhv.config.infinityDisplay": "Infinity Text",
+  "lhv.config.infinityDisplay.desc": "Text to display when damage is infinite",
+
+  "lhv.config.nanDisplay": "NaN Text",
+  "lhv.config.nanDisplay.desc": "Text to display when damage is not a number",
+
+  "lhv.config.unitSystem": "Unit System",
+  "lhv.config.unitSystem.desc": "Unit system used for number formatting",
+  "yacl3.config.enum.UnitSystem.short_scale": "Short Scale",
+  "yacl3.config.enum.UnitSystem.short_scale.desc": "§6Short Scale§r: Base-1000 large number units (K/M/B/T/Qa...)",
+  "yacl3.config.enum.UnitSystem.metric_prefix": "SI Metric Prefixes",
+  "yacl3.config.enum.UnitSystem.metric_prefix.desc": "§6SI Metric Prefixes§r: Base-1000 units with decimal support, international standard",
+  "yacl3.config.enum.UnitSystem.long_scale": "Long Scale",
+  "yacl3.config.enum.UnitSystem.long_scale.desc": "§6Long Scale§r: Base-1000000 large number units (M/B/T...)",
+
+  "lhv.config.useGrouping": "Use Grouping",
+  "lhv.config.useGrouping.desc": "Whether to enable digit grouping (e.g. thousand separators)",
+
+  "lhv.config.groupingSeparator": "Grouping Separator",
+  "lhv.config.groupingSeparator.desc": "Character used to separate digit groups",
+
+  "lhv.config.decimalSeparator": "Decimal Separator",
+  "lhv.config.decimalSeparator.desc": "Character used to separate integer and fractional parts",
+
+  "lhv.config.exponentSeparator": "Exponent Separator",
+  "lhv.config.exponentSeparator.desc": "Exponent marker in scientific notation",
+
+  "lhv.config.positivePrefix": "Positive Prefix",
+  "lhv.config.positivePrefix.desc": "Prefix text for positive numbers",
+
+  "lhv.config.negativePrefix": "Negative Prefix",
+  "lhv.config.negativePrefix.desc": "Prefix text for negative numbers",
+
+  "lhv.config.positiveSuffix": "Positive Suffix",
+  "lhv.config.positiveSuffix.desc": "Suffix text for positive numbers",
+
+  "lhv.config.negativeSuffix": "Negative Suffix",
+  "lhv.config.negativeSuffix.desc": "Suffix text for negative numbers",
+
+  "lhv.config.roundingMode": "Rounding Mode",
+  "lhv.config.roundingMode.desc": "Select the rounding mode for damage numbers",
+  "yacl3.config.enum.RoundingMode.up": "UP (Away from Zero)",
+  "yacl3.config.enum.RoundingMode.up.desc": "§6UP (Away from Zero)§r: Round away from zero",
+  "yacl3.config.enum.RoundingMode.down": "DOWN (Toward Zero)",
+  "yacl3.config.enum.RoundingMode.down.desc": "§6DOWN (Toward Zero)§r: Round toward zero (truncate)",
+  "yacl3.config.enum.RoundingMode.ceiling": "CEILING (Positive Infinity)",
+  "yacl3.config.enum.RoundingMode.ceiling.desc": "§6CEILING (Positive Infinity)§r: Round toward positive infinity",
+  "yacl3.config.enum.RoundingMode.floor": "FLOOR (Negative Infinity)",
+  "yacl3.config.enum.RoundingMode.floor.desc": "§6FLOOR (Negative Infinity)§r: Round toward negative infinity",
+  "yacl3.config.enum.RoundingMode.half_up": "HALF_UP (Standard Round)",
+  "yacl3.config.enum.RoundingMode.half_up.desc": "§6HALF_UP (Standard Round)§r: Classic rounding (0.5 rounds up)",
+  "yacl3.config.enum.RoundingMode.half_down": "HALF_DOWN (Half Down)",
+  "yacl3.config.enum.RoundingMode.half_down.desc": "§6HALF_DOWN (Half Down)§r: 0.5 rounds down, only above 0.5 rounds up",
+  "yacl3.config.enum.RoundingMode.half_even": "HALF_EVEN (Banker's Round)",
+  "yacl3.config.enum.RoundingMode.half_even.desc": "§6HALF_EVEN (Banker's Round)§r: 0.5 rounds to the nearest even digit, reduces cumulative error",
+
+  "lhv.config.killDisplay": "Kill Message",
+  "lhv.config.killDisplay.desc": "Extra text shown when damage kills an entity; leave empty to disable",
+
+  "lhv.config.defaultColor": "Default Color",
+  "lhv.config.defaultColor.desc": "Default color for damage numbers (#RRGGBB)",
+
+  "lhv.config.criticalColor": "Critical Color",
+  "lhv.config.criticalColor.desc": "Color for critical hit damage numbers; may be overridden by special colors (#RRGGBB)",
+
+  "lhv.config.criticalFormatTemplate": "Critical Format Template",
+  "lhv.config.criticalFormatTemplate.desc": "Format string for critical damage; %s is replaced with the damage number",
+
+  "lhv.config.outlineEnable": "Outline",
+  "lhv.config.outlineEnable.desc": "Whether to add an outline effect to damage numbers",
+
+  "lhv.config.outlineColor": "Outline Color",
+  "lhv.config.outlineColor.desc": "Color of the outline effect (#RRGGBB)",
+
+  "lhv.config.outlineWidth": "Outline Width",
+  "lhv.config.outlineWidth.desc": "Width of the outline effect (pixels)",
+
+  "lhv.config.depthToScaleRef": "Scale Reference Distance",
+  "lhv.config.depthToScaleRef.desc": "Distance from camera at which scale is 100%. Numbers scale up when closer and down when farther (meters)",
+
+  "lhv.config.minScale": "Min Scale",
+  "lhv.config.minScale.desc": "Minimum scale for damage numbers",
+
+  "lhv.config.maxScale": "Max Scale",
+  "lhv.config.maxScale.desc": "Maximum scale for damage numbers",
+
+  "lhv.config.depthToAlphaRef": "Alpha Reference Distance",
+  "lhv.config.depthToAlphaRef.desc": "Distance from camera at which opacity reaches the configured maximum. Numbers become more transparent when closer and more opaque when farther (meters)",
+
+  "lhv.config.minAlpha": "Min Opacity",
+  "lhv.config.minAlpha.desc": "Minimum opacity for damage numbers",
+
+  "lhv.config.maxAlpha": "Max Opacity",
+  "lhv.config.maxAlpha.desc": "Maximum opacity for damage numbers",
+
+  "lhv.config.punchyEffectEnable": "Punchy Animation",
+  "lhv.config.punchyEffectEnable.desc": "Whether to enable a more impactful punchy animation effect for damage numbers",
+
+  "lhv.config.bigNumberTestMode": "Big Number Test Mode",
+  "lhv.config.bigNumberTestMode.desc": "When enabled, damage values are displayed as larger numbers to test formatting"
+}

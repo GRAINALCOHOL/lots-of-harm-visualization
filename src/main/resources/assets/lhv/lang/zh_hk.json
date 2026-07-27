@@ -1,0 +1,184 @@
+{
+  "lhv.config.title": "Sublime Damage Display 設定",
+  "lhv.hub.player": "玩家傷害設定",
+  "lhv.hub.entity": "實體傷害設定",
+  "lhv.hub.env": "環境傷害設定",
+  "lhv.hub.global": "全域設定",
+  "lhv.hub.back": "返回",
+
+  "lhv.config.player.title": "玩家傷害設定",
+  "lhv.config.entity.title": "實體傷害設定",
+  "lhv.config.env.title": "環境傷害設定",
+  "lhv.config.global.title": "全域設定",
+
+  "yacl3.config.lhv:global_config.category.global": "§e全域§r",
+
+  "yacl3.config.lhv:player_config.category.general": "§d基本設定§r",
+  "yacl3.config.lhv:player_config.category.format": "§b格式設定§r",
+  "yacl3.config.lhv:player_config.category.custom": "§a自訂設定§r",
+
+  "yacl3.config.lhv:entity_config.category.general": "§d基本設定§r",
+  "yacl3.config.lhv:entity_config.category.format": "§b格式設定§r",
+  "yacl3.config.lhv:entity_config.category.custom": "§a自訂設定§r",
+
+  "yacl3.config.lhv:env_config.category.general": "§d基本設定§r",
+  "yacl3.config.lhv:env_config.category.format": "§b格式設定§r",
+  "yacl3.config.lhv:env_config.category.custom": "§a自訂設定§r",
+
+  "lhv.config.renderMode": "顯示行為",
+  "lhv.config.renderMode.desc": "傷害數字嘅顯示行為",
+  "yacl3.config.enum.RenderMode.merge": "合併",
+  "yacl3.config.enum.RenderMode.merge.desc": "§6合併§r：同一實體受到嘅所有傷害會加埋做一個傷害數字",
+  "yacl3.config.enum.RenderMode.latest": "最新",
+  "yacl3.config.enum.RenderMode.latest.desc": "§6最新§r：只顯示同一實體最後受到嘅一次傷害",
+  "yacl3.config.enum.RenderMode.all": "全部",
+  "yacl3.config.enum.RenderMode.all.desc": "§6全部§r：顯示同一實體受到嘅所有傷害",
+
+  "lhv.config.minVisibleRange": "最小可見距離",
+  "lhv.config.minVisibleRange.desc": "傷害數字可見嘅最短距離（米）",
+
+  "lhv.config.maxVisibleRange": "最大可見距離",
+  "lhv.config.maxVisibleRange.desc": "傷害數字可見嘅最遠距離（米）",
+
+  "lhv.config.trackEntity": "追蹤實體",
+  "lhv.config.trackEntity.desc": "傷害數字係咪跟隨實體移動",
+
+  "lhv.config.retainWhenOffScreen": "離屏保留",
+  "lhv.config.retainWhenOffScreen.desc": "傷害數字喺實體移出畫面後係咪繼續顯示",
+
+  "lhv.config.displayDuration": "顯示時長",
+  "lhv.config.displayDuration.desc": "傷害數字存在嘅時間（遊戲刻）",
+
+  "lhv.config.maxReceiveRange": "接收範圍",
+  "lhv.config.maxReceiveRange.desc": "傷害資訊嘅最大接收範圍（米）",
+
+  "lhv.config.screenOffsetRangeX": "畫面偏移範圍（水平）",
+  "lhv.config.screenOffsetRangeX.desc": "傷害數字喺畫面中沿水平方向隨機偏移嘅範圍（像素）",
+
+  "lhv.config.screenOffsetRangeY": "畫面偏移範圍（垂直）",
+  "lhv.config.screenOffsetRangeY.desc": "傷害數字喺畫面中沿垂直方向隨機偏移嘅範圍（像素）",
+
+  "lhv.config.offsetRangeX": "3D偏移範圍（X軸）",
+  "lhv.config.offsetRangeX.desc": "傷害數字喺世界中沿X軸隨機偏移嘅範圍（米）",
+
+  "lhv.config.offsetRangeZ": "3D偏移範圍（Y軸）",
+  "lhv.config.offsetRangeZ.desc": "傷害數字喺世界中沿Z軸隨機偏移嘅範圍（米）",
+
+  "lhv.config.offsetRangeY": "3D偏移範圍（Z軸）",
+  "lhv.config.offsetRangeY.desc": "傷害數字喺世界中沿Y軸隨機偏移嘅範圍（米）",
+
+  "lhv.config.formatMode": "格式化方式",
+  "lhv.config.formatMode.desc": "傷害數字嘅格式化方式",
+  "yacl3.config.enum.FormatMode.scientific": "科學記數法",
+  "yacl3.config.enum.FormatMode.scientific.desc": "§6科學記數法§r：一律用科學記數法顯示大數或小數",
+  "yacl3.config.enum.FormatMode.unit": "單位後綴",
+  "yacl3.config.enum.FormatMode.unit.desc": "§6單位後綴§r：一律用單位後綴顯示大數",
+  "yacl3.config.enum.FormatMode.auto": "自動",
+  "yacl3.config.enum.FormatMode.auto.desc": "§6自動§r：根據數值大細自動揀適合嘅格式",
+  "yacl3.config.enum.FormatMode.raw": "原始",
+  "yacl3.config.enum.FormatMode.raw.desc": "§6原始§r：直接顯示原始數值，只受小數位數設定影響",
+
+  "lhv.config.retainDecimalPlaces": "小數位數",
+  "lhv.config.retainDecimalPlaces.desc": "傷害顯示時會保留嘅小數位數",
+
+  "lhv.config.infinityDisplay": "無限傷害顯示",
+  "lhv.config.infinityDisplay.desc": "傷害係無限（Infinity）時顯示嘅文字",
+
+  "lhv.config.nanDisplay": "非數值傷害顯示",
+  "lhv.config.nanDisplay.desc": "傷害係非數值（Not a Number）時顯示嘅文字",
+
+  "lhv.config.unitSystem": "單位制度",
+  "lhv.config.unitSystem.desc": "格式化時用嘅單位制度",
+  "yacl3.config.enum.UnitSystem.short_scale": "短級差",
+  "yacl3.config.enum.UnitSystem.short_scale.desc": "§6短級差制§r：千進制大數單位",
+  "yacl3.config.enum.UnitSystem.metric_prefix": "SI 公制前綴",
+  "yacl3.config.enum.UnitSystem.metric_prefix.desc": "§6SI 公制前綴§r：支援小數嘅千進制單位制，國際通用",
+  "yacl3.config.enum.UnitSystem.long_scale": "長級差",
+  "yacl3.config.enum.UnitSystem.long_scale.desc": "§6長級差制§r：百萬進制大數單位",
+
+  "lhv.config.useGrouping": "啟用數字分組",
+  "lhv.config.useGrouping.desc": "係咪啟用數字分組（千位分隔等）",
+
+  "lhv.config.groupingSeparator": "分組分隔符",
+  "lhv.config.groupingSeparator.desc": "數字分組之間嘅分隔符號",
+
+  "lhv.config.decimalSeparator": "小數分隔符",
+  "lhv.config.decimalSeparator.desc": "整數部分同小數部分之間嘅分隔符號",
+
+  "lhv.config.exponentSeparator": "指數分隔符",
+  "lhv.config.exponentSeparator.desc": "科學記數法中指數部分嘅標記符號",
+
+  "lhv.config.positivePrefix": "正數前綴",
+  "lhv.config.positivePrefix.desc": "正數前面嘅前綴文字",
+
+  "lhv.config.negativePrefix": "負數前綴",
+  "lhv.config.negativePrefix.desc": "負數前面嘅前綴文字",
+
+  "lhv.config.positiveSuffix": "正數後綴",
+  "lhv.config.positiveSuffix.desc": "正數後面嘅後綴文字",
+
+  "lhv.config.negativeSuffix": "負數後綴",
+  "lhv.config.negativeSuffix.desc": "負數後面嘅後綴文字",
+
+  "lhv.config.roundingMode": "捨入模式",
+  "lhv.config.roundingMode.desc": "揀數字捨入方式",
+  "yacl3.config.enum.RoundingMode.up": "UP（遠離零）",
+  "yacl3.config.enum.RoundingMode.up.desc": "§6UP（遠離零）§r：向遠離零嘅方向捨入，即向絕對值更大嘅方向進位",
+  "yacl3.config.enum.RoundingMode.down": "DOWN（靠近零）",
+  "yacl3.config.enum.RoundingMode.down.desc": "§6DOWN（靠近零）§r：向靠近零嘅方向捨入，即直接截斷多餘位數",
+  "yacl3.config.enum.RoundingMode.ceiling": "CEILING（正無窮）",
+  "yacl3.config.enum.RoundingMode.ceiling.desc": "§6CEILING（正無窮）§r：向正無窮方向捨入",
+  "yacl3.config.enum.RoundingMode.floor": "FLOOR（負無窮）",
+  "yacl3.config.enum.RoundingMode.floor.desc": "§6FLOOR（負無窮）§r：向負無窮方向捨入",
+  "yacl3.config.enum.RoundingMode.half_up": "HALF_UP（四捨五入）",
+  "yacl3.config.enum.RoundingMode.half_up.desc": "§6HALF_UP（四捨五入）§r：經典四捨五入",
+  "yacl3.config.enum.RoundingMode.half_down": "HALF_DOWN（五捨六入）",
+  "yacl3.config.enum.RoundingMode.half_down.desc": "§6HALF_DOWN（五捨六入）§r：啱啱好 5 時捨去，超過 5 先進位",
+  "yacl3.config.enum.RoundingMode.half_even": "HALF_EVEN（銀行家捨入）",
+  "yacl3.config.enum.RoundingMode.half_even.desc": "§6HALF_EVEN（銀行家捨入）§r：啱啱好 5 時向最近嘅偶數方向捨入，其他情況與經典四捨五入相同",
+
+  "lhv.config.killDisplay": "擊殺提示",
+  "lhv.config.killDisplay.desc": "傷害擊殺實體時額外顯示嘅文字，留空就唔顯示",
+
+  "lhv.config.defaultColor": "預設顏色",
+  "lhv.config.defaultColor.desc": "傷害數字嘅預設顏色（#RRGGBB）",
+
+  "lhv.config.criticalColor": "爆擊顏色",
+  "lhv.config.criticalColor.desc": "爆擊時傷害數字嘅顏色，可能會被特殊顏色覆蓋（#RRGGBB）",
+
+  "lhv.config.criticalFormatTemplate": "爆擊格式模板",
+  "lhv.config.criticalFormatTemplate.desc": "爆擊時傷害數字嘅格式化模板，%s 會被換成傷害數字",
+
+  "lhv.config.outlineEnable": "描邊",
+  "lhv.config.outlineEnable.desc": "係咪為傷害數字加描邊效果",
+
+  "lhv.config.outlineColor": "描邊顏色",
+  "lhv.config.outlineColor.desc": "描邊效果嘅顏色（#RRGGBB）",
+
+  "lhv.config.outlineWidth": "描邊寬度",
+  "lhv.config.outlineWidth.desc": "描邊效果嘅闊度（像素）",
+
+  "lhv.config.depthToScaleRef": "隨距離縮放參考量（米）",
+  "lhv.config.depthToScaleRef.desc": "傷害數字同鏡頭之間嘅距離等於參考量時縮放比例係100%，近啲會放大，遠啲會縮細",
+
+  "lhv.config.minScale": "最細縮放比例",
+  "lhv.config.minScale.desc": "傷害數字嘅最細縮放比例",
+
+  "lhv.config.maxScale": "最大縮放比例",
+  "lhv.config.maxScale.desc": "傷害數字嘅最大縮放比例",
+
+  "lhv.config.depthToAlphaRef": "隨距離透明參考量（米）",
+  "lhv.config.depthToAlphaRef.desc": "傷害數字同鏡頭之間嘅距離等於參考量時透明度會達到設定嘅最實，近啲會變透明，遠啲會變實",
+
+  "lhv.config.minAlpha": "最細不透明度",
+  "lhv.config.minAlpha.desc": "傷害數字嘅最細不透明度",
+
+  "lhv.config.maxAlpha": "最大不透明度",
+  "lhv.config.maxAlpha.desc": "傷害數字嘅最大不透明度",
+
+  "lhv.config.punchyEffectEnable": "更具打擊感嘅動畫",
+  "lhv.config.punchyEffectEnable.desc": "係咪啟用更具打擊感嘅傷害數字動畫效果",
+
+  "lhv.config.bigNumberTestMode": "大數字測試模式",
+  "lhv.config.bigNumberTestMode.desc": "啟用後傷害值會以較大數值顯示，用嚟測試格式化效果"
+}

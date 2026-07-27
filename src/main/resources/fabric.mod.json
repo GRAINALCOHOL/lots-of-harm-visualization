@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "lhv",
+	"version": "${version}",
+	"name": "Lots of Harm Visualization",
+	"description": "A stylish and highly customizable damage number display mod. See your damage like never before.",
+	"authors": [
+		"GRAINALCOHOL"
+	],
+	"contact": {
+		"sources": ""
+	},
+	"license": "GPL-3.0",
+	"icon": "assets/lhv/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"grainalcohol.lhv.LHVMod"
+		],
+		"client": [
+			"grainalcohol.lhv.client.LHVModClient"
+		],
+		"modmenu": [
+			"grainalcohol.lhv.LHVModMenu"
+		]
+	},
+	"mixins": [
+		"lhv.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*",
+		"yet_another_config_lib_v3": "*"
+	}
+}
