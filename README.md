@@ -2,6 +2,8 @@
 
 Language: | > English < | [简体中文](README-zh_cn.md) |
 
+![Banner](banner.png)
+
 ## ❗ Notes
 
 - This mod, especially the character animations, is heavily inspired by *Zenless Zone Zero*. Please contact me if there are any concerns regarding copyright — I will address them promptly.

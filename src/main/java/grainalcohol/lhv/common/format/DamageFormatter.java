@@ -17,12 +17,10 @@ public abstract class DamageFormatter {
     @Nullable
     private DecimalFormat scientificDecimalFormat;
 
-    public String format(SourceType sourceType, double value) {
-        if (value == 0.0) return "0";
-        if (Double.isInfinite(value)) return sourceType.getConfig().getInfinityDisplay();
-        if (Double.isNaN(value)) return sourceType.getConfig().getNanDisplay();
+    public String format(SourceType sourceType, BigDecimal value) {
+        if (value.compareTo(BigDecimal.ZERO) == 0) return "0";
 
-        return applyFormat(sourceType, BigDecimal.valueOf(value));
+        return applyFormat(sourceType, value);
     }
 
     abstract String applyFormat(SourceType sourceType, BigDecimal value);

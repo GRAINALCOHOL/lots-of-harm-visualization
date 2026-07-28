@@ -15,7 +15,7 @@ public class PulseEffect extends BaseEffect {
     private final int staggerMs;
 
     public PulseEffect() {
-        this(2.5f, 0.1f, 200, 50);
+        this(1.6f, 0.1f, 100, 25);
     }
 
     @Override

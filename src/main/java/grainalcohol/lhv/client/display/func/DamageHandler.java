@@ -1,9 +1,10 @@
 package grainalcohol.lhv.client.display.func;
 
-import java.util.function.BiConsumer;
+import java.math.BigDecimal;
+import java.util.function.Consumer;
 
 @FunctionalInterface
-public interface DamageHandler extends BiConsumer<Double, Boolean> {
+public interface DamageHandler extends Consumer<BigDecimal> {
     @Override
-    void accept(Double damageAmount, Boolean isCritical);
+    void accept(BigDecimal damageAmount);
 }

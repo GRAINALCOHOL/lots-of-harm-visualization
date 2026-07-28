@@ -1,7 +1,10 @@
 package grainalcohol.lhv.client.display.renderer;
 
+import grainalcohol.lhv.client.display.func.CriticalHandler;
 import grainalcohol.lhv.client.display.func.DamageHandler;
 import grainalcohol.lhv.common.enums.SourceType;
+
+import java.math.BigDecimal;
 
 public class MergeRenderer extends BaseDamageRenderer {
     public MergeRenderer(SourceType sourceType) {
@@ -9,10 +12,12 @@ public class MergeRenderer extends BaseDamageRenderer {
     }
 
     @Override
-    public DamageHandler getHandler() {
-        return (damageAmount, isCritical) -> {
-            this.damageAmount += damageAmount;
-            this.isCritical |= isCritical;
-        };
+    public DamageHandler getDamageHandler() {
+        return damageAmount -> this.damageAmount = this.damageAmount.add(damageAmount);
+    }
+
+    @Override
+    CriticalHandler getCriticalHandler() {
+        return isCritical -> this.isCritical |= isCritical;
     }
 }

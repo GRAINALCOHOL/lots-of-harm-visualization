@@ -1,6 +1,7 @@
 package grainalcohol.lhv.client.display.renderer;
 
 import grainalcohol.lhv.client.LHVModClient;
+import grainalcohol.lhv.client.display.func.CriticalHandler;
 import grainalcohol.lhv.client.display.func.DamageHandler;
 import grainalcohol.lhv.client.effect.effects.*;
 import grainalcohol.lhv.client.wrapper.StyledText;
@@ -17,6 +18,8 @@ import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.math.BigDecimal;
 
 public abstract class BaseDamageRenderer implements DamageRenderer {
     // render setting
@@ -36,8 +39,11 @@ public abstract class BaseDamageRenderer implements DamageRenderer {
 
     // damage
     private final DamageFormatter formatter;
-    protected double damageAmount;
+    protected BigDecimal damageAmount;
     protected boolean isCritical;
+    // 无穷（Infinity）和 NaN 与任何数进行运算，结果仍为 Infinity 或 NaN。
+    protected boolean hasInfinity;
+    protected boolean hasNaN;
 
     // effect
     @NotNull
@@ -53,11 +59,12 @@ public abstract class BaseDamageRenderer implements DamageRenderer {
 
         this.mainSlot = TextDisplaySlot.empty(
                 sourceType.getConfig().getDisplayDuration() * 50,
-                true, 0.72f, 0.8f,
+                0.72f, 0.8f,
                 textDisplay -> {
                     textDisplay
                             .addEffect(new FadeInEffect())
                             .addEffect(new FlashInEffect())
+                            .addEffect(new PulseEffect())
                             .addEffect(new ShrinkEffect())
                             .addEffect(new SimpleTypewriterEffect())
                             .addEffect(sweepEffect);
@@ -73,9 +80,10 @@ public abstract class BaseDamageRenderer implements DamageRenderer {
                     if (sweepEffect.isFinished(computeTextLength())) sweepEffect.restart();
                 }
         );
+        this.mainSlot.outline();
         this.subSlot = TextDisplaySlot.empty(
                 sourceType.getConfig().getDisplayDuration() * 50,
-                true, 0.72f, 0.8f,
+                0.72f, 0.8f,
                 textDisplay -> textDisplay
                         .addEffect(new FadeInEffect())
                         .addEffect(new FlashInEffect())
@@ -87,6 +95,11 @@ public abstract class BaseDamageRenderer implements DamageRenderer {
                 null,
                 -16, 0.8f
         );
+        this.subSlot.outline();
+
+        this.damageAmount = BigDecimal.ZERO;
+        this.hasInfinity = false;
+        this.hasNaN = false;
 
         this.hasBeenOnScreen = false;
         this.initialized = false;
@@ -94,7 +107,18 @@ public abstract class BaseDamageRenderer implements DamageRenderer {
 
     @Override
     public void handleDamage(DamageInfo damageInfo) {
-        getHandler().accept(damageInfo.getDamageAmount(), damageInfo.isCritical());
+        double amount = damageInfo.getDamageAmount();
+        if (Double.isInfinite(amount)) {
+            this.mainSlot.rainbow();
+            this.hasInfinity = true;
+        } else if (Double.isNaN(amount)) {
+            this.hasNaN = true;
+        } else {
+            // 非特殊值才处理伤害回调，避免污染伤害量
+            // 并且BigDecimal也无法表示Infinity和NaN
+            getDamageHandler().accept(BigDecimal.valueOf(amount));
+        }
+        getCriticalHandler().accept(damageInfo.isCritical());
 
         this.mainSlot.setText(getStyledDamage(damageInfo.getDamageColor()));
         if (damageInfo.getSubText() != null) {
@@ -105,7 +129,9 @@ public abstract class BaseDamageRenderer implements DamageRenderer {
         this.initialized = true;
     }
 
-    abstract DamageHandler getHandler();
+    abstract DamageHandler getDamageHandler();
+
+    abstract CriticalHandler getCriticalHandler();
 
     @Override
     public void render(@NotNull DrawContext drawContext, Vec3d worldPos, float yawDelta) {
@@ -165,24 +191,34 @@ public abstract class BaseDamageRenderer implements DamageRenderer {
     }
 
     private String getFormattedDamage() {
-        return (isCritical ? sourceType.getConfig().getCriticalFormat() : "%s").formatted(formatter.format(sourceType, damageAmount));
+        String criticalFormat = isCritical ? sourceType.getConfig().getCriticalFormat() : "%s";
+
+        if (this.hasInfinity) {
+            return criticalFormat.formatted(sourceType.getConfig().getInfinityDisplay());
+        }
+        if (this.hasNaN) {
+            return criticalFormat.formatted(sourceType.getConfig().getNanDisplay());
+        }
+
+        return criticalFormat.formatted(formatter.format(sourceType, damageAmount));
     }
 
     private StyledText getStyledDamage(@Nullable TextColor typedColor) {
         var config = sourceType.getConfig();
-        if (typedColor == null) {
-            if (isCritical) {
-                var textColor = TextColor.parse(config.getCriticalColor());
-                int rgb = textColor != null ? textColor.getRgb() : 0xFF0000;
-                return StyledText.literal(getFormattedDamage(), rgb);
-            } else {
-                var textColor = TextColor.parse(config.getDefaultColor());
-                int rgb = textColor != null ? textColor.getRgb() : 0x303030;
-                return StyledText.literal(getFormattedDamage(), rgb);
-            }
-        } else {
+
+        if (typedColor != null) {
             return StyledText.literal(getFormattedDamage(), typedColor.getRgb());
         }
+
+        String colorStr = isCritical ? config.getCriticalColor() : config.getDefaultColor();
+        TextColor textColor = TextColor.parse(colorStr);
+        if (textColor == null) {
+            LHVModClient.LOGGER.warn("Invalid {} color: {}, using fallback color.",
+                    (isCritical ? "critical" : "default"), colorStr);
+            return StyledText.literal(getFormattedDamage(), (isCritical ? 0xFF0000 : 0x303030));
+        }
+
+        return StyledText.literal(getFormattedDamage(), textColor.getRgb());
     }
 
     private int computeTextLength() {

@@ -53,7 +53,7 @@ public class DamageRouter {
         )) return;
 
         DamageInfo damageInfo = new DamageInfo(
-                damageContext.getDamageAmount() + (GlobalConfig.getInstance().bigNumberTestMode ? Math.random() * 10000000000L : 0),
+                (GlobalConfig.getInstance().infinityTestMode ? Double.POSITIVE_INFINITY : damageContext.getDamageAmount() + (GlobalConfig.getInstance().bigNumberTestMode ? Math.random() * 10000000000L : 0)),
                 damageContext.isCritical(),
                 SubTextProviders.compute(damageContext),
                 LHVModClient.findDamageColor(sourceType.getConfig(), damageContext.getDamageTypeId())

@@ -12,7 +12,7 @@ public class SimpleTypewriterEffect extends BaseEffect {
     private final int speedMs;
 
     public SimpleTypewriterEffect() {
-        this(50);
+        this(25);
     }
 
     @Override

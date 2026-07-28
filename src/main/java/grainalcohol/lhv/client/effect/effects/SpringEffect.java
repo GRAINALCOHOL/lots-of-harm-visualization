@@ -26,7 +26,7 @@ public class SpringEffect extends BaseEffect {
     private final int staggerMs;
 
     public SpringEffect() {
-        this(1.4f, 0.03f, 0.01f, 50);
+        this(0.6f, 0.08f, 0.006f, 25);
     }
 
     @Override
@@ -43,14 +43,17 @@ public class SpringEffect extends BaseEffect {
 
         float envelope = amplitude * (float) Math.exp(-damping * localTime);
 
-        float heightOffset = envelope * (float) Math.cos(omega * localTime);
+        float phase = (omega / damping) * (1f - (float) Math.exp(-damping * localTime));
+
+        float heightOffset = envelope * (float) Math.cos(phase);
         float heightScale = Math.max(0.3f, Math.min(1 + amplitude, 1 + heightOffset));
 
         // 90°相位差
         int widthDelayMs = (int) (Math.PI / 2 / omega);
         float widthLocalTime = localTime - widthDelayMs;
         float widthEnvelope = amplitude * (float) Math.exp(-damping * Math.max(0, widthLocalTime));
-        float widthOffset = widthEnvelope * (float) Math.cos(omega * widthLocalTime);
+        float widthPhase = (omega / damping) * (1f - (float) Math.exp(-damping * Math.max(0, widthLocalTime)));
+        float widthOffset = widthEnvelope * (float) Math.cos(widthPhase - (float) Math.PI / 2);
         float widthScale = Math.max(0.3f, Math.min(1 + amplitude, 1 + widthOffset));
 
         setting.widthScale *= widthScale;

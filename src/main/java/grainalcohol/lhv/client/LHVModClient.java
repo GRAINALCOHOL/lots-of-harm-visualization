@@ -17,6 +17,8 @@ import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +26,7 @@ import java.util.UUID;
 
 public class LHVModClient implements ClientModInitializer {
     public static final DamageRouter ROUTER = new DamageRouter();
+    public static final Logger LOGGER = LoggerFactory.getLogger(LHVModClient.class);
 
     @Override
     public void onInitializeClient() {

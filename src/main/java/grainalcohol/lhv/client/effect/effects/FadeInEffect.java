@@ -13,7 +13,7 @@ public class FadeInEffect extends BaseEffect {
     private final int staggerMs;
 
     public FadeInEffect() {
-        this(200, 50);
+        this(100, 25);
     }
 
     @Override

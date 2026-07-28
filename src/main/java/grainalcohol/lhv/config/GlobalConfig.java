@@ -28,6 +28,13 @@ public class GlobalConfig {
     @CustomDescription("lhv.config.bigNumberTestMode.desc")
     public boolean bigNumberTestMode = false;
 
+    @SerialEntry(comment = "无限伤害测试模式")
+    @AutoGen(category = "global")
+    @TickBox
+    @CustomName("lhv.config.infinityTestMode")
+    @CustomDescription("lhv.config.infinityTestMode.desc")
+    public boolean infinityTestMode = false;
+
     @SerialEntry(comment = "客户端不会处理的伤害类型（客户端不显示）")
     public Set<String> ignoreDamageTypes = LHVConfig.getDefaultIgnoreTypes();
 

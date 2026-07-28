@@ -11,7 +11,8 @@ public class TextDisplaySlot {
     @Nullable
     private TextDisplay textDisplay;
     private final int durationMs;
-    private final boolean outline;
+    private boolean outline;
+    private boolean rainbow;
     private final float widthMultiplier;
     private final float heightMultiplier;
     @Nullable
@@ -23,7 +24,7 @@ public class TextDisplaySlot {
 
     private TextDisplaySlot(
             @Nullable StyledText styledText,
-            int durationMs, boolean outline,
+            int durationMs,
             float widthMultiplier,
             float heightMultiplier,
             @Nullable TextDisplayHandler onTextCreated,
@@ -32,7 +33,6 @@ public class TextDisplaySlot {
             float scaleMultiplier
     ) {
         this.durationMs = durationMs;
-        this.outline = outline;
         this.widthMultiplier = widthMultiplier;
         this.heightMultiplier = heightMultiplier;
         this.onTextCreated = onTextCreated;
@@ -47,17 +47,17 @@ public class TextDisplaySlot {
     }
 
     public static TextDisplaySlot empty(
-            int durationMs, boolean outline,
+            int durationMs,
             float widthMultiplier,
             float heightMultiplier,
             @Nullable TextDisplayHandler onTextCreated,
             @Nullable TextDisplayHandler onTextChanged
     ) {
-        return empty(durationMs, outline, widthMultiplier, heightMultiplier, onTextCreated, onTextChanged, 0.0f, 1.0f);
+        return empty(durationMs, widthMultiplier, heightMultiplier, onTextCreated, onTextChanged, 0.0f, 1.0f);
     }
 
     public static TextDisplaySlot empty(
-            int durationMs, boolean outline,
+            int durationMs,
             float widthMultiplier,
             float heightMultiplier,
             @Nullable TextDisplayHandler onTextCreated,
@@ -65,7 +65,29 @@ public class TextDisplaySlot {
             float verticalOffset,
             float scaleMultiplier
     ) {
-        return new TextDisplaySlot(null, durationMs, outline, widthMultiplier, heightMultiplier, onTextCreated, onTextChanged, verticalOffset, scaleMultiplier);
+        return new TextDisplaySlot(null, durationMs, widthMultiplier, heightMultiplier, onTextCreated, onTextChanged, verticalOffset, scaleMultiplier);
+    }
+
+    public void rainbow(boolean enable) {
+        this.rainbow = enable;
+        if (this.textDisplay != null) {
+            this.textDisplay.rainbow(enable);
+        }
+    }
+
+    public void rainbow() {
+        this.rainbow(true);
+    }
+
+    public void outline(boolean enable) {
+        this.outline = enable;
+        if (this.textDisplay != null) {
+            this.textDisplay.outline(enable);
+        }
+    }
+
+    public void outline() {
+        this.outline(true);
     }
 
     public boolean isEmpty() {
@@ -157,7 +179,8 @@ public class TextDisplaySlot {
     private void createTextDisplay(@NotNull StyledText styledText) {
         this.textDisplay = TextDisplay
                 .create(styledText, durationMs)
-                .outline(outline);
+                .outline(outline)
+                .rainbow(rainbow);
         if (onTextCreated != null) {
             onTextCreated.accept(textDisplay);
         }
