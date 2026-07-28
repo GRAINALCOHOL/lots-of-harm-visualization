@@ -4,7 +4,7 @@ import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 import dev.isxander.yacl3.api.YetAnotherConfigLib;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
-import grainalcohol.lhv.client.LHVModClient;
+import grainalcohol.lhv.client.LHVModAPI;
 import grainalcohol.lhv.config.EntityConfig;
 import grainalcohol.lhv.config.EnvConfig;
 import grainalcohol.lhv.config.GlobalConfig;
@@ -98,7 +98,7 @@ public class LHVModMenu implements ModMenuApi {
                     .title(Text.translatable(titleKey))
                     .save(() -> {
                         onSave.run();
-                        LHVModClient.ROUTER.clear();
+                        LHVModAPI.clearDamage();
                     });
             for (var category : handler.generateGui().categories()) {
                 builder.category(category);

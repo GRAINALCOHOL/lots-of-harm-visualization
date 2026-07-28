@@ -1,7 +1,6 @@
 package grainalcohol.lhv.client;
 
 import grainalcohol.lhv.client.display.DamageRouter;
-import grainalcohol.lhv.client.display.TextDisplay;
 import grainalcohol.lhv.client.subtext.SubTextProviders;
 import grainalcohol.lhv.config.EntityConfig;
 import grainalcohol.lhv.config.EnvConfig;
@@ -20,8 +19,6 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class LHVModClient implements ClientModInitializer {

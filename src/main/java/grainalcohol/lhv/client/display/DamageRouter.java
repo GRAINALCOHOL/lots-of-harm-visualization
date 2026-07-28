@@ -11,17 +11,21 @@ import grainalcohol.lhv.config.GlobalConfig;
 import grainalcohol.lhv.mixin.accessor.WorldEntityLookupInvoker;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.option.GameOptions;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 public class DamageRouter {
     private final Map<UUID, RendererManager> MANAGERS = new HashMap<>();
 
-    private void handleDamage(
+    public void handleDamage(
             @NotNull final SourceType sourceType,
             @NotNull final UUID victimUuid,
             final float victimYaw,
@@ -72,32 +76,33 @@ public class DamageRouter {
         var client = MinecraftClient.getInstance();
         if (client.world == null || client.player == null) return;
 
-        var iterator = MANAGERS.entrySet().iterator();
-        while (iterator.hasNext()) {
-            var entry = iterator.next();
+        MANAGERS.values().removeIf(RendererManager::isExpired);
+        if (MANAGERS.isEmpty()) return;
+
+        computeRenderStream(client.options, client.player).forEach(entry -> {
             var manager = entry.getValue();
-            if (manager.isExpired()) {
-                iterator.remove();
+            var entity = ((WorldEntityLookupInvoker) client.world).invokeGetEntityLookup().get(entry.getKey());
+            if (entity != null) {
+                manager.render(drawContext, entity.getLerpedPos(tickDelta), entity.getYaw(tickDelta));
             } else {
-                UUID uuid = entry.getKey();
-                if (client.options.getPerspective().isFirstPerson() && client.player.getUuid().equals(uuid)) {
-                    continue;
-                }
-
-                var entity = ((WorldEntityLookupInvoker) client.world).invokeGetEntityLookup().get(uuid);
-                if (entity != null) {
-                    Vec3d lerpedPos = entity.getLerpedPos(tickDelta);
-                    float lerpedYaw = entity.getYaw(tickDelta);
-
-                    manager.render(drawContext, lerpedPos, lerpedYaw);
-                } else {
-                    manager.render(drawContext);
-                }
+                manager.render(drawContext);
             }
-        }
+        });
     }
 
-    public void clear(UUID victimUuid) {
+    @SuppressWarnings("ConstantConditions")
+    private @NotNull Stream<Map.Entry<UUID, RendererManager>> computeRenderStream(@NotNull GameOptions options, @NotNull ClientPlayerEntity player) {
+        var stream = MANAGERS.entrySet().stream().filter(entry -> !(options.getPerspective().isFirstPerson() && player.getUuid().equals(entry.getKey())));
+
+        var comparator = Comparator.<Map.Entry<UUID, RendererManager>>comparingDouble(e -> e.getValue().getLatestWorldPos().squaredDistanceTo(player.getPos()));
+        return switch (GlobalConfig.getInstance().entitySortMode) {
+            case RANDOM -> stream;
+            case NEAREST -> stream.sorted(comparator.reversed());
+            case FARTHEST -> stream.sorted(comparator);
+        };
+    }
+
+    public void clear(@NotNull final UUID victimUuid) {
         MANAGERS.remove(victimUuid);
     }
 

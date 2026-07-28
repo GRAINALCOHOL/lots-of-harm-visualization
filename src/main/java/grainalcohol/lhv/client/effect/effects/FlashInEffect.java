@@ -12,7 +12,7 @@ public class FlashInEffect extends BaseEffect {
     private final int durationMs;
 
     public FlashInEffect() {
-        this(500);
+        this(600);
     }
 
     @Override

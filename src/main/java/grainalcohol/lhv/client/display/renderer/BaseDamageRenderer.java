@@ -62,12 +62,10 @@ public abstract class BaseDamageRenderer implements DamageRenderer {
                 0.72f, 0.8f,
                 textDisplay -> {
                     textDisplay
-                            .addEffect(new FadeInEffect())
                             .addEffect(new FlashInEffect())
                             .addEffect(new PulseEffect())
                             .addEffect(new ShrinkEffect())
-                            .addEffect(new SimpleTypewriterEffect())
-                            .addEffect(sweepEffect);
+                            .addEffect(new SimpleTypewriterEffect());
                     if (sourceType.getConfig().isPunchyEffectEnable()) {
                         textDisplay.addEffect(new SpringEffect());
                     } else {
@@ -75,7 +73,7 @@ public abstract class BaseDamageRenderer implements DamageRenderer {
                     }
                 },
                 textDisplay -> {
-                    textDisplay.addEffect(bounceEffect);
+                    textDisplay.addEffect(bounceEffect).addEffect(sweepEffect);
                     if (bounceEffect.isFinished(computeTextLength())) bounceEffect.restart();
                     if (sweepEffect.isFinished(computeTextLength())) sweepEffect.restart();
                 }
@@ -85,7 +83,6 @@ public abstract class BaseDamageRenderer implements DamageRenderer {
                 sourceType.getConfig().getDisplayDuration() * 50,
                 0.72f, 0.8f,
                 textDisplay -> textDisplay
-                        .addEffect(new FadeInEffect())
                         .addEffect(new FlashInEffect())
                         .addEffect(new SpringEffect())
                         .addEffect(new PulseEffect())

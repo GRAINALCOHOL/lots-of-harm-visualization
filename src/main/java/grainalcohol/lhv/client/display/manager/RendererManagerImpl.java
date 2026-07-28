@@ -3,6 +3,7 @@ package grainalcohol.lhv.client.display.manager;
 import grainalcohol.lhv.client.display.renderer.DamageRenderer;
 import grainalcohol.lhv.common.dto.DamageInfo;
 import grainalcohol.lhv.common.enums.SourceType;
+import grainalcohol.lhv.config.GlobalConfig;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.math.Vec3d;
 
@@ -41,7 +42,7 @@ public class RendererManagerImpl implements RendererManager {
         this.latestYaw = victimYaw;
 
         RENDERERS.computeIfAbsent(
-                sourceType, k -> k.getConfig().createRenderer()
+                sourceType, k -> k.getConfig().createRenderer(k)
         ).handleDamage(damageInfo);
 
         RENDERER_ORDER.remove(sourceType);
@@ -49,8 +50,13 @@ public class RendererManagerImpl implements RendererManager {
     }
 
     @Override
+    public Vec3d getLatestWorldPos() {
+        return latestWorldPos;
+    }
+
+    @Override
     public void render(DrawContext drawContext) {
-        for (var st : RENDERER_ORDER) {
+        for (var st : computeReverseOrder()) {
             var renderer = RENDERERS.get(st);
             if (renderer == null) continue;
 
@@ -64,7 +70,7 @@ public class RendererManagerImpl implements RendererManager {
 
     @Override
     public void render(DrawContext drawContext, Vec3d lerpedPos, float lerpedYaw) {
-        for (var st : RENDERER_ORDER) {
+        for (var st : computeReverseOrder()) {
             var renderer = RENDERERS.get(st);
             if (renderer == null) continue;
 
@@ -81,6 +87,17 @@ public class RendererManagerImpl implements RendererManager {
                 renderer.render(drawContext, getRendererPos(lerpedPos), getYawDelta(lerpedYaw));
             }
         }
+    }
+
+    private List<SourceType> computeReverseOrder() {
+        return switch (GlobalConfig.getInstance().sourceSortMode) {
+            case LATEST -> new ArrayList<>(RENDERER_ORDER);
+            case OLDEST -> {
+                var list = new ArrayList<>(RENDERER_ORDER);
+                Collections.reverse(list);
+                yield list;
+            }
+        };
     }
 
     private Vec3d getRendererPos(Vec3d worldPos) {

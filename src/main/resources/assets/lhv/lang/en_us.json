@@ -34,6 +34,14 @@
   "yacl3.config.enum.RenderMode.all": "All",
   "yacl3.config.enum.RenderMode.all.desc": "§6All§r: Shows every instance of damage dealt to an entity",
 
+  "lhv.config.damageSortMode": "Damage Sort Mode",
+  "lhv.config.damageSortMode.desc": "Sorting order for overlapping damage numbers from the same source (effective when §6Display Behavior§r is set to §6All§r)",
+  "lhv.config.damageSortMode.note": "To modify sorting between different entities or sources, see §6Global Settings§r",
+  "yacl3.config.enum.DamageSortMode.latest": "Latest",
+  "yacl3.config.enum.DamageSortMode.latest.desc": "§6Latest§r: More recent damage numbers cover earlier ones",
+  "yacl3.config.enum.DamageSortMode.oldest": "Oldest",
+  "yacl3.config.enum.DamageSortMode.oldest.desc": "§6Oldest§r: Earlier damage numbers cover later ones",
+
   "lhv.config.minVisibleRange": "Min Visible Range",
   "lhv.config.minVisibleRange.desc": "Minimum distance for damage numbers to be visible (meters)",
 
@@ -179,6 +187,25 @@
   "lhv.config.punchyEffectEnable": "Punchy Animation",
   "lhv.config.punchyEffectEnable.desc": "Whether to enable a more impactful punchy animation effect for damage numbers",
 
-  "lhv.config.bigNumberTestMode": "Big Number Test Mode",
-  "lhv.config.bigNumberTestMode.desc": "When enabled, damage values are displayed as larger numbers to test formatting"
+  "lhv.config.entitySortMode": "Entity Sort Mode",
+  "lhv.config.entitySortMode.desc": "Sorting order for overlapping damage numbers from different entities",
+  "yacl3.config.enum.EntitySortMode.random": "Random",
+  "yacl3.config.enum.EntitySortMode.random.desc": "§6Random§r: Random order",
+  "yacl3.config.enum.EntitySortMode.nearest": "Nearest",
+  "yacl3.config.enum.EntitySortMode.nearest.desc": "§6Nearest§r: Closer to camera covers farther ones",
+  "yacl3.config.enum.EntitySortMode.farthest": "Farthest",
+  "yacl3.config.enum.EntitySortMode.farthest.desc": "§6Farthest§r: Farther from camera covers closer ones",
+
+  "lhv.config.sourceSortMode": "Source Sort Mode",
+  "lhv.config.sourceSortMode.desc": "Sorting order for overlapping damage numbers from different sources on the same entity",
+  "yacl3.config.enum.SourceSortMode.latest": "Latest",
+  "yacl3.config.enum.SourceSortMode.latest.desc": "§6Latest§r: More recent damage source covers earlier ones",
+  "yacl3.config.enum.SourceSortMode.oldest": "Oldest",
+  "yacl3.config.enum.SourceSortMode.oldest.desc": "§6Oldest§r: Earlier damage source covers later ones",
+
+  "lhv.config.bigNumberTestMode": "Big Number Mode",
+  "lhv.config.bigNumberTestMode.desc": "When enabled, damage values are displayed as larger numbers",
+
+  "lhv.config.infinityTestMode": "Infinity Mode",
+  "lhv.config.infinityTestMode.desc": "When enabled, all damage values will be infinite"
 }

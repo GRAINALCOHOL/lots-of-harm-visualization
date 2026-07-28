@@ -5,8 +5,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 public class ClientPacketHandler {
     public static void init() {
-        ClientPlayNetworking.registerGlobalReceiver(DamageS2CPacket.PACKET_TYPE, (damageContext, player, sender) -> {
-            LHVModClient.ROUTER.handleDamage(damageContext);
-        });
+        ClientPlayNetworking.registerGlobalReceiver(DamageS2CPacket.PACKET_TYPE, (damageContext, player, sender) ->
+                LHVModAPI.handleDamage(damageContext));
     }
 }

@@ -4,10 +4,7 @@ import grainalcohol.lhv.client.display.renderer.DamageRenderer;
 import grainalcohol.lhv.client.display.renderer.ListRenderer;
 import grainalcohol.lhv.client.display.renderer.MergeRenderer;
 import grainalcohol.lhv.client.display.renderer.SingleRenderer;
-import grainalcohol.lhv.common.enums.FormatMode;
-import grainalcohol.lhv.common.enums.RenderMode;
-import grainalcohol.lhv.common.enums.SourceType;
-import grainalcohol.lhv.common.enums.UnitSystem;
+import grainalcohol.lhv.common.enums.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.minecraft.text.TextColor;
@@ -24,10 +21,9 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor
 public final class LHVConfig {
-    private final SourceType sourceType;
-
     // region general
     private final RenderMode renderMode;
+    private final DamageSortMode damageSortMode;
     private final double minVisibleRange;
     private final double maxVisibleRange;
     private final boolean trackEntity;
@@ -80,11 +76,11 @@ public final class LHVConfig {
     private final Map<String, String> damageTypeColors;
 
     @NotNull
-    public DamageRenderer createRenderer() {
+    public DamageRenderer createRenderer(SourceType sourceType) {
         return switch (getRenderMode()) {
-            case MERGE -> new MergeRenderer(getSourceType());
-            case ALL -> new ListRenderer(getSourceType());
-            case LATEST -> new SingleRenderer(getSourceType());
+            case MERGE -> new MergeRenderer(sourceType);
+            case ALL -> new ListRenderer(sourceType);
+            case LATEST -> new SingleRenderer(sourceType);
         };
     }
 

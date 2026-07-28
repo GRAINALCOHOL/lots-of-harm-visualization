@@ -6,10 +6,7 @@ import dev.isxander.yacl3.config.v2.api.autogen.*;
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import grainalcohol.lhv.LHVMod;
 import grainalcohol.lhv.common.dto.LHVConfig;
-import grainalcohol.lhv.common.enums.FormatMode;
-import grainalcohol.lhv.common.enums.RenderMode;
-import grainalcohol.lhv.common.enums.SourceType;
-import grainalcohol.lhv.common.enums.UnitSystem;
+import grainalcohol.lhv.common.enums.*;
 import lombok.Getter;
 
 import java.math.RoundingMode;
@@ -40,6 +37,18 @@ public class PlayerConfig implements LHVConfigSupplier {
             "yacl3.config.enum.RenderMode.all.desc"
     })
     public RenderMode renderMode = RenderMode.MERGE;
+
+    @SerialEntry(comment = "伤害排序方式：LATEST（最新）、OLDEST（最旧）")
+    @AutoGen(category = "general")
+    @EnumCycler
+    @CustomName("lhv.config.damageSortMode")
+    @CustomDescription({
+            "lhv.config.damageSortMode.desc",
+            "lhv.config.damageSortMode.note",
+            "yacl3.config.enum.DamageSortMode.latest.desc",
+            "yacl3.config.enum.DamageSortMode.oldest.desc"
+    })
+    public DamageSortMode damageSortMode = DamageSortMode.LATEST;
 
     @SerialEntry(comment = "最小可见距离（米）")
     @AutoGen(category = "general")
@@ -355,8 +364,8 @@ public class PlayerConfig implements LHVConfigSupplier {
     @Override
     public LHVConfig toConfig() {
         return new LHVConfig(
-                SourceType.PLAYER,
                 renderMode,
+                damageSortMode,
                 minVisibleRange,
                 maxVisibleRange,
                 trackEntity,

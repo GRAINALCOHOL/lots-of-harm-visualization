@@ -34,6 +34,14 @@
   "yacl3.config.enum.RenderMode.all": "全部",
   "yacl3.config.enum.RenderMode.all.desc": "§6全部§r：顯示同一實體所受到的所有傷害",
 
+  "lhv.config.damageSortMode": "傷害數字排序方式",
+  "lhv.config.damageSortMode.desc": "同一傷害源中傷害數字重疊時的排序方式（在§6顯示行為§r設定為§6全部§r時有效）",
+  "lhv.config.damageSortMode.note": "需要修改多個實體或多個傷害源之間傷害數字的排序方式，請查看§6全域設定§r",
+  "yacl3.config.enum.DamageSortMode.latest": "最新",
+  "yacl3.config.enum.DamageSortMode.latest.desc": "§6最新§r：更晚造成的傷害數字覆蓋更早的",
+  "yacl3.config.enum.DamageSortMode.oldest": "最舊",
+  "yacl3.config.enum.DamageSortMode.oldest.desc": "§6最舊§r：更早造成的傷害數字覆蓋更晚的",
+
   "lhv.config.minVisibleRange": "最小可見距離",
   "lhv.config.minVisibleRange.desc": "傷害數字可見的最小距離（公尺）",
 
@@ -179,6 +187,25 @@
   "lhv.config.punchyEffectEnable": "更具打擊感的動畫",
   "lhv.config.punchyEffectEnable.desc": "是否啟用更具打擊感的傷害數字動畫效果",
 
-  "lhv.config.bigNumberTestMode": "大數字測試模式",
-  "lhv.config.bigNumberTestMode.desc": "啟用後傷害值會以較大數值顯示，用於測試格式化效果"
+  "lhv.config.entitySortMode": "實體排序方式",
+  "lhv.config.entitySortMode.desc": "多個實體的傷害數字重疊時的排序方式",
+  "yacl3.config.enum.EntitySortMode.random": "隨機",
+  "yacl3.config.enum.EntitySortMode.random.desc": "§6隨機§r：隨機排序",
+  "yacl3.config.enum.EntitySortMode.nearest": "最近",
+  "yacl3.config.enum.EntitySortMode.nearest.desc": "§6最近§r：距離攝影機更近的覆蓋更遠的",
+  "yacl3.config.enum.EntitySortMode.farthest": "最遠",
+  "yacl3.config.enum.EntitySortMode.farthest.desc": "§6最遠§r：距離攝影機更遠的覆蓋更近的",
+
+  "lhv.config.sourceSortMode": "傷害源排序方式",
+  "lhv.config.sourceSortMode.desc": "同一實體受到的多個傷害源的傷害數字重疊時的排序方式",
+  "yacl3.config.enum.SourceSortMode.latest": "最新",
+  "yacl3.config.enum.SourceSortMode.latest.desc": "§6最新§r：更晚造成的傷害源覆蓋更早的",
+  "yacl3.config.enum.SourceSortMode.oldest": "最舊",
+  "yacl3.config.enum.SourceSortMode.oldest.desc": "§6最舊§r：更早造成的傷害源覆蓋更晚的",
+
+  "lhv.config.bigNumberTestMode": "超大數字功能",
+  "lhv.config.bigNumberTestMode.desc": "啟用後傷害值會以較大數值顯示",
+
+  "lhv.config.infinityTestMode": "無窮傷害功能",
+  "lhv.config.infinityTestMode.desc": "啟用後所有傷害值都會是無窮大"
 }
