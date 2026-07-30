@@ -92,7 +92,6 @@ public final class LHVConfig {
         return set;
     }
 
-    // TODO: 在json里是整数，应该用字符串解析
     public static Map<String, String> getDefaultColors() {
         Map<String, String> map = new HashMap<>();
         map.put("minecraft:in_fire", "#FE3622");
@@ -143,7 +142,8 @@ public final class LHVConfig {
     @Nullable
     public TextColor findColor(String damageTypeId) {
         String hex = getDamageTypeColors().get(damageTypeId);
-        return  TextColor.parse(hex);
+        if (hex == null) return null;
+        return TextColor.parse(hex);
     }
 
     public boolean isInRenderRange(Vec3d start, Vec3d end) {

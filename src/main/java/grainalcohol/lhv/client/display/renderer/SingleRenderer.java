@@ -11,7 +11,12 @@ public class SingleRenderer extends BaseDamageRenderer {
 
     @Override
     public DamageHandler getDamageHandler() {
-        return damageAmount -> this.damageAmount = damageAmount;
+        return damageAmount -> {
+            this.hasNaN = false;
+            this.hasInfinity = false;
+            this.mainSlot.rainbow(false);
+            this.damageAmount = damageAmount;
+        };
     }
 
     @Override
