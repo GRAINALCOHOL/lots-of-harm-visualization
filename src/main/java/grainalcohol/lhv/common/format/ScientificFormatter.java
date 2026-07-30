@@ -1,6 +1,6 @@
 package grainalcohol.lhv.common.format;
 
-import grainalcohol.lhv.common.enums.SourceType;
+import grainalcohol.lhv.common.dto.FormatConfig;
 
 import java.math.BigDecimal;
 
@@ -8,8 +8,8 @@ public class ScientificFormatter extends DamageFormatter {
     public static final ScientificFormatter INSTANCE = new ScientificFormatter();
 
     @Override
-    String applyFormat(SourceType sourceType, BigDecimal value) {
-        return this.scientificFormat(sourceType, value);
+    String applyFormat(FormatConfig formatConfig, BigDecimal value) {
+        return this.scientificFormat(formatConfig, value);
     }
 
     public static ScientificFormatter getInstance() {

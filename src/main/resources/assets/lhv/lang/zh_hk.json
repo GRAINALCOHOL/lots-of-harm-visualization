@@ -15,15 +15,15 @@
 
   "yacl3.config.lhv:player_config.category.general": "§d基本設定§r",
   "yacl3.config.lhv:player_config.category.format": "§b格式設定§r",
-  "yacl3.config.lhv:player_config.category.custom": "§a自訂設定§r",
+  "yacl3.config.lhv:player_config.category.display": "§a顯示設定§r",
 
   "yacl3.config.lhv:entity_config.category.general": "§d基本設定§r",
   "yacl3.config.lhv:entity_config.category.format": "§b格式設定§r",
-  "yacl3.config.lhv:entity_config.category.custom": "§a自訂設定§r",
+  "yacl3.config.lhv:entity_config.category.display": "§a顯示設定§r",
 
   "yacl3.config.lhv:env_config.category.general": "§d基本設定§r",
   "yacl3.config.lhv:env_config.category.format": "§b格式設定§r",
-  "yacl3.config.lhv:env_config.category.custom": "§a自訂設定§r",
+  "yacl3.config.lhv:env_config.category.display": "§a顯示設定§r",
 
   "lhv.config.renderMode": "顯示行為",
   "lhv.config.renderMode.desc": "傷害數字嘅顯示行為",

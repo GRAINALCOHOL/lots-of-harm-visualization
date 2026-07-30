@@ -1,7 +1,8 @@
 package grainalcohol.lhv.client.display.renderer;
 
 import grainalcohol.lhv.common.dto.DamageInfo;
-import grainalcohol.lhv.common.enums.SourceType;
+import grainalcohol.lhv.common.enums.DamageSortMode;
+import grainalcohol.lhv.common.source.SourceType;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +30,7 @@ public class ListRenderer implements DamageRenderer {
 
     @Override
     public void render(@NotNull DrawContext drawContext, Vec3d worldPos, float yawDelta) {
-        List<SingleRenderer> renderList = computeRenderList(sourceType);
+        List<SingleRenderer> renderList = computeRenderList(sourceType.getGeneralConfig().getDamageSortMode());
         if (renderList.isEmpty()) return;
 
         for (var renderer : renderList) {
@@ -37,7 +38,7 @@ public class ListRenderer implements DamageRenderer {
         }
     }
 
-    private List<SingleRenderer> computeRenderList(SourceType sourceType) {
+    private List<SingleRenderer> computeRenderList(DamageSortMode sortMode) {
         while (!rendererPool.isEmpty() && rendererPool.peekFirst().isExpired()) {
             rendererPool.pollFirst();
         }
@@ -45,7 +46,7 @@ public class ListRenderer implements DamageRenderer {
         if (rendererPool.isEmpty()) return List.of();
 
         List<SingleRenderer> result = new ArrayList<>(rendererPool);
-        return switch (sourceType.getConfig().getDamageSortMode()) {
+        return switch (sortMode) {
             case LATEST -> result;
             case OLDEST -> {
                 Collections.reverse(result);

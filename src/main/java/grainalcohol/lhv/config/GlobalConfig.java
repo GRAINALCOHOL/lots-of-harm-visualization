@@ -5,7 +5,7 @@ import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import dev.isxander.yacl3.config.v2.api.autogen.*;
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import grainalcohol.lhv.LHVMod;
-import grainalcohol.lhv.common.dto.LHVConfig;
+import grainalcohol.lhv.client.LHVModClient;
 import grainalcohol.lhv.common.enums.EntitySortMode;
 import grainalcohol.lhv.common.enums.SourceSortMode;
 
@@ -58,7 +58,7 @@ public class GlobalConfig {
     public boolean infinityTestMode = false;
 
     @SerialEntry(comment = "客户端不会处理的伤害类型（客户端不显示）")
-    public Set<String> ignoreDamageTypes = LHVConfig.getDefaultIgnoreTypes();
+    public Set<String> ignoreDamageTypes = LHVModClient.getDefaultIgnoreTypes();
 
     public static GlobalConfig getInstance() {
         return HANDLER.instance();

@@ -6,10 +6,9 @@ import grainalcohol.lhv.client.display.func.DamageHandler;
 import grainalcohol.lhv.client.effect.effects.*;
 import grainalcohol.lhv.client.wrapper.StyledText;
 import grainalcohol.lhv.client.wrapper.TextDisplaySlot;
-import grainalcohol.lhv.common.dto.DamageInfo;
-import grainalcohol.lhv.common.dto.ScreenPosition;
-import grainalcohol.lhv.common.enums.SourceType;
+import grainalcohol.lhv.common.dto.*;
 import grainalcohol.lhv.common.format.DamageFormatter;
+import grainalcohol.lhv.common.source.SourceType;
 import grainalcohol.lhv.common.util.ScreenUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -23,7 +22,9 @@ import java.math.BigDecimal;
 
 public abstract class BaseDamageRenderer implements DamageRenderer {
     // render setting
-    private final SourceType sourceType;
+    private final GeneralConfig generalConfig;
+    private final FormatConfig formatConfig;
+    private final DisplayConfig displayConfig;
     private final Vec2f screenOffset;
     private final Vec3d worldOffset;
 
@@ -52,13 +53,15 @@ public abstract class BaseDamageRenderer implements DamageRenderer {
     private final SweepEffect sweepEffect = new SweepEffect();
 
     protected BaseDamageRenderer(SourceType sourceType) {
-        this.sourceType = sourceType;
-        this.formatter = sourceType.getConfig().getFormatMode().createFormatter();
-        this.screenOffset = LHVModClient.computeScreenOffset(sourceType.getConfig());
-        this.worldOffset = LHVModClient.computeWorldOffset(sourceType.getConfig());
+        this.generalConfig = sourceType.getGeneralConfig();
+        this.formatConfig = sourceType.getFormatConfig();
+        this.displayConfig = sourceType.getDisplayConfig();
+        this.formatter = sourceType.getFormatConfig().getFormatMode().createFormatter();
+        this.screenOffset = sourceType.getGeneralConfig().computeScreenOffset();
+        this.worldOffset = sourceType.getGeneralConfig().computeWorldOffset();
 
         this.mainSlot = TextDisplaySlot.empty(
-                sourceType.getConfig().getDisplayDuration() * 50,
+                sourceType.getGeneralConfig().getDisplayDuration() * 50,
                 0.72f, 0.8f,
                 textDisplay -> {
                     textDisplay
@@ -66,7 +69,7 @@ public abstract class BaseDamageRenderer implements DamageRenderer {
                             .addEffect(new PulseEffect())
                             .addEffect(new ShrinkEffect())
                             .addEffect(new SimpleTypewriterEffect());
-                    if (sourceType.getConfig().isPunchyEffectEnable()) {
+                    if (sourceType.getGeneralConfig().isPunchyEffectEnable()) {
                         textDisplay.addEffect(new SpringEffect());
                     } else {
                         textDisplay.addEffect(new SettleEffect());
@@ -80,7 +83,7 @@ public abstract class BaseDamageRenderer implements DamageRenderer {
         );
         this.mainSlot.outline();
         this.subSlot = TextDisplaySlot.empty(
-                sourceType.getConfig().getDisplayDuration() * 50,
+                sourceType.getGeneralConfig().getDisplayDuration() * 50,
                 0.72f, 0.8f,
                 textDisplay -> textDisplay
                         .addEffect(new FlashInEffect())
@@ -138,7 +141,7 @@ public abstract class BaseDamageRenderer implements DamageRenderer {
         if (client.world == null || client.player == null) return;
 
         this.updateWorldPos(worldPos, yawDelta);
-        if (sourceType.getConfig().isInRenderRange(worldPos, client.player.getPos())) {
+        if (this.generalConfig.isInRenderRange(worldPos, client.player.getPos())) {
             this.mainSlot.render(drawContext);
             this.subSlot.render(drawContext);
         }
@@ -150,25 +153,31 @@ public abstract class BaseDamageRenderer implements DamageRenderer {
 
         ScreenPosition screenPosition = ScreenUtil.worldToScreen(getRenderPos(worldPos, yawDelta));
 
-        var config = sourceType.getConfig();
-
         if (screenPosition != null) {
-            latestScreenPos = screenPosition;
-            hasBeenOnScreen = true;
+            this.latestScreenPos = screenPosition;
+            this.hasBeenOnScreen = true;
             this.setScreenPos(screenPosition);
             this.setScale(screenPosition.depthToScale(
-                    config.getDepthToScaleRef(), config.getMinScale(), config.getMaxScale()
+                    this.displayConfig.getDepthToScaleRef(),
+                    this.displayConfig.getMinScale(),
+                    this.displayConfig.getMaxScale()
             ));
             this.setAlpha(screenPosition.depthToAlpha(
-                    config.getDepthToAlphaRef(), config.getMinAlpha(), config.getMaxAlpha()
+                    this.displayConfig.getDepthToAlphaRef(),
+                    this.displayConfig.getMinAlpha(),
+                    this.displayConfig.getMaxAlpha()
             ));
-        } else if (hasBeenOnScreen && sourceType.getConfig().isRetainWhenOffScreen()) {
+        } else if (hasBeenOnScreen && generalConfig.isRetainWhenOffScreen()) {
             this.setScreenPos(latestScreenPos);
             this.setScale(latestScreenPos.depthToScale(
-                    config.getDepthToScaleRef(), config.getMinScale(), config.getMaxScale()
+                    this.displayConfig.getDepthToScaleRef(),
+                    this.displayConfig.getMinScale(),
+                    this.displayConfig.getMaxScale()
             ), 0.6f);
             this.mainSlot.setAlpha(latestScreenPos.depthToAlpha(
-                    config.getDepthToAlphaRef(), config.getMinAlpha(), config.getMaxAlpha()
+                    this.displayConfig.getDepthToAlphaRef(),
+                    this.displayConfig.getMinAlpha(),
+                    this.displayConfig.getMaxAlpha()
             ));
             this.subSlot.setAlpha(0f);
         } else {
@@ -188,26 +197,24 @@ public abstract class BaseDamageRenderer implements DamageRenderer {
     }
 
     private String getFormattedDamage() {
-        String criticalFormat = isCritical ? sourceType.getConfig().getCriticalFormat() : "%s";
+        String criticalFormat = isCritical ? displayConfig.getCriticalFormatTemplate() : "%s";
 
         if (this.hasInfinity) {
-            return criticalFormat.formatted(sourceType.getConfig().getInfinityDisplay());
+            return criticalFormat.formatted(formatConfig.getInfinityDisplay());
         }
         if (this.hasNaN) {
-            return criticalFormat.formatted(sourceType.getConfig().getNanDisplay());
+            return criticalFormat.formatted(formatConfig.getNanDisplay());
         }
 
-        return criticalFormat.formatted(formatter.format(sourceType, damageAmount));
+        return criticalFormat.formatted(formatter.format(formatConfig, damageAmount));
     }
 
     private StyledText getStyledDamage(@Nullable TextColor typedColor) {
-        var config = sourceType.getConfig();
-
         if (typedColor != null) {
             return StyledText.literal(getFormattedDamage(), typedColor.getRgb());
         }
 
-        String colorStr = isCritical ? config.getCriticalColor() : config.getDefaultColor();
+        String colorStr = isCritical ? displayConfig.getCriticalColor() : displayConfig.getDefaultColor();
         TextColor textColor = TextColor.parse(colorStr);
         if (textColor == null) {
             LHVModClient.LOGGER.warn("Invalid {} color: {}, using fallback color.",

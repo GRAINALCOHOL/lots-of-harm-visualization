@@ -36,7 +36,7 @@ public class SubTextProviders {
         register(context -> {
             if (context.isDied()) {
                 return Optional.of(StyledText.literal(
-                        context.getSourceType().getConfig().getKillDisplay(),
+                        context.getSourceType().getDisplayConfig().getKillDisplay(),
                         0xFFFF1000
                 ));
             } else return Optional.empty();

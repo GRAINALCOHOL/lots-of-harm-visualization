@@ -2,7 +2,7 @@ package grainalcohol.lhv.client.display.renderer;
 
 import grainalcohol.lhv.client.display.func.CriticalHandler;
 import grainalcohol.lhv.client.display.func.DamageHandler;
-import grainalcohol.lhv.common.enums.SourceType;
+import grainalcohol.lhv.common.source.SourceType;
 
 public class SingleRenderer extends BaseDamageRenderer {
     public SingleRenderer(SourceType sourceType) {

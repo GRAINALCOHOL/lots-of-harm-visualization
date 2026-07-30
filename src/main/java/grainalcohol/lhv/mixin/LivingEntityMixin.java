@@ -2,15 +2,14 @@ package grainalcohol.lhv.mixin;
 
 import committee.nova.mods.avaritia.common.item.tools.InfinitySwordItem;
 import grainalcohol.lhv.common.dto.DamageContext;
-import grainalcohol.lhv.common.enums.SourceType;
 import grainalcohol.lhv.common.network.DamageS2CPacket;
+import grainalcohol.lhv.common.source.SourceType;
+import grainalcohol.lhv.common.source.LHVSourceTypes;
 import grainalcohol.lhv.internal.CriticalArgController;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.GrassBlock;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.projectile.ArrowEntity;
-import net.minecraft.item.BlockItem;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
@@ -41,16 +40,19 @@ public abstract class LivingEntityMixin {
             isCritical = arrow.isCritical();
         }
 
-        String damageTypeId = source.getTypeRegistryEntry().getKey().map(RegistryKey::getValue).orElse(Identifier.of("minecraft", "generic")).toString();
-
-        @NotNull SourceType sourceType = SourceType.PLAYER;
+        String damageTypeId = source.getTypeRegistryEntry()
+                .getKey()
+                .map(RegistryKey::getValue)
+                .orElse(Identifier.of("minecraft", "generic"))
+                .toString();
+        @NotNull SourceType sourceType = LHVSourceTypes.PLAYER;
         @Nullable ServerPlayerEntity target = null;
         double damage = amount;
         boolean isDead = victim.isDead();
 
         if (source.getAttacker() == null) {
             target = null;
-            sourceType = SourceType.ENVIRONMENT;
+            sourceType = LHVSourceTypes.ENVIRONMENT;
         } else if (source.getAttacker() instanceof ServerPlayerEntity serverPlayerEntity) {
             target = serverPlayerEntity;
             if (FabricLoader.getInstance().isModLoaded("avaritia")
@@ -58,9 +60,6 @@ public abstract class LivingEntityMixin {
                     || serverPlayerEntity.getMainHandStack().getItem() instanceof InfinitySwordItem)) {
                 damage = Double.POSITIVE_INFINITY;
                 isDead = true;
-            }
-            if (serverPlayerEntity.getMainHandStack().getItem() instanceof BlockItem bi && bi.getBlock() instanceof GrassBlock) {
-                damage = Double.POSITIVE_INFINITY;
             }
         } else if (source.getAttacker() instanceof LivingEntity livingEntity) {
             if (damageTypeId.equals("avaritia:infinity") && victim.getUuid().equals(livingEntity.getUuid())) {
@@ -70,7 +69,7 @@ public abstract class LivingEntityMixin {
                 return;
             }
             target = null;
-            sourceType = SourceType.ENTITY;
+            sourceType = LHVSourceTypes.ENTITY;
         }
 
         DamageContext damageContext = new DamageContext(

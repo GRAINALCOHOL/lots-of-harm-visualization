@@ -2,7 +2,7 @@ package grainalcohol.lhv.client.display.manager;
 
 import grainalcohol.lhv.client.display.renderer.DamageRenderer;
 import grainalcohol.lhv.common.dto.DamageInfo;
-import grainalcohol.lhv.common.enums.SourceType;
+import grainalcohol.lhv.common.source.SourceType;
 import grainalcohol.lhv.config.GlobalConfig;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.math.Vec3d;
@@ -10,7 +10,7 @@ import net.minecraft.util.math.Vec3d;
 import java.util.*;
 
 public class RendererManagerImpl implements RendererManager {
-    private final EnumMap<SourceType, DamageRenderer> RENDERERS = new EnumMap<>(SourceType.class);
+    private final Map<SourceType, DamageRenderer> RENDERERS = new HashMap<>();
     private final LinkedHashSet<SourceType> RENDERER_ORDER = new LinkedHashSet<>();
 
     // per entity
@@ -42,7 +42,7 @@ public class RendererManagerImpl implements RendererManager {
         this.latestYaw = victimYaw;
 
         RENDERERS.computeIfAbsent(
-                sourceType, k -> k.getConfig().createRenderer(k)
+                sourceType, k -> k.getGeneralConfig().createRenderer(k)
         ).handleDamage(damageInfo);
 
         RENDERER_ORDER.remove(sourceType);
@@ -79,7 +79,7 @@ public class RendererManagerImpl implements RendererManager {
                 continue;
             }
 
-            if (!st.getConfig().isTrackEntity()) {
+            if (!st.getGeneralConfig().isTrackEntity()) {
                 renderer.render(drawContext, getRendererPos(latestWorldPos), getYawDelta(latestYaw));
             } else {
                 this.latestWorldPos = lerpedPos;

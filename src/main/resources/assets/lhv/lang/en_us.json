@@ -15,15 +15,15 @@
 
   "yacl3.config.lhv:player_config.category.general": "§dGeneral§r",
   "yacl3.config.lhv:player_config.category.format": "§bFormat§r",
-  "yacl3.config.lhv:player_config.category.custom": "§aCustom§r",
+  "yacl3.config.lhv:player_config.category.display": "§aDisplay§r",
 
   "yacl3.config.lhv:entity_config.category.general": "§dGeneral§r",
   "yacl3.config.lhv:entity_config.category.format": "§bFormat§r",
-  "yacl3.config.lhv:entity_config.category.custom": "§aCustom§r",
+  "yacl3.config.lhv:entity_config.category.display": "§aDisplay§r",
 
   "yacl3.config.lhv:env_config.category.general": "§dGeneral§r",
   "yacl3.config.lhv:env_config.category.format": "§bFormat§r",
-  "yacl3.config.lhv:env_config.category.custom": "§aCustom§r",
+  "yacl3.config.lhv:env_config.category.display": "§aDisplay§r",
 
   "lhv.config.renderMode": "Display Behavior",
   "lhv.config.renderMode.desc": "How damage numbers are displayed",

@@ -18,15 +18,13 @@ A damage number display mod using direct Minecraft font rendering (no ETA). Feat
 grainalcohol.lhv/
 ├── LHVMod.java                    # Server-side initializer (empty)
 ├── LHVModMenu.java                # ModMenu integration
-├── internal/
-│   ├── LHVGlyphRenderer.java      # Interface for glyph render mixin
-│   └── CriticalArgController.java # Critical argument control
 ├── client/
-│   ├── LHVModClient.java          # Client init, offset/range/color computation
+│   ├── LHVModAPI.java             # Public API: registerSourceType, handleDamage
+│   ├── LHVModClient.java          # Client init, default colors/ignore types, verticalOffset
 │   ├── ClientEventListener.java   # HudRenderCallback → DamageRouter.render()
 │   ├── ClientPacketHandler.java   # Packet → DamageRouter.handleDamage()
 │   ├── display/
-│   │   ├── DamageRouter.java      # Routes damage per UUID → Manager (HashMap)
+│   │   ├── DamageRouter.java      # Routes damage per UUID → Manager; initForVictim/getManager
 │   │   ├── TextDisplay.java       # Per-character rendering, outline, clamp, effects, textAlpha
 │   │   ├── renderer/
 │   │   │   ├── DamageRenderer.java        # Interface: handleDamage(DamageInfo)
@@ -35,8 +33,8 @@ grainalcohol.lhv/
 │   │   │   ├── MergeRenderer.java         # MERGE: accumulative
 │   │   │   └── ListRenderer.java          # ALL: TreeMap<Long, SingleRenderer> by timestamp
 │   │   ├── manager/
-│   │   │   ├── RendererManager.java          # Interface: handleDamage / render / isExpired
-│   │   │   └── RendererManagerImpl.java      # Impl: RENDERERS (EnumMap), RENDERER_ORDER, yaw tracking
+│   │   │   ├── RendererManager.java          # Interface: handleDamage / render / isExpired / getLatestWorldPos
+│   │   │   └── RendererManagerImpl.java      # Impl: HashMap<SourceType>, computeReverseOrder, sort modes
 │   │   └── func/
 │   │       ├── DamageHandler.java        # (Double, Boolean) → merge/replace logic
 │   │       └── TextDisplayHandler.java   # Callback type for TextDisplaySlot events
@@ -65,12 +63,19 @@ grainalcohol.lhv/
 │           └── SweepEffect.java
 ├── common/
 │   ├── dto/
-│   │   ├── LHVConfig.java          # Config DTO (sourceType, renderMode, ranges, offsets, format, colors, outline, scale, alpha, damageTypeColors...)
+│   │   ├── GeneralConfig.java      # General sub-DTO: ranges, offsets, createRenderer, computeScreenOffset, computeWorldOffset, isInRenderRange, isInReceiveRange
+│   │   ├── FormatConfig.java       # Format sub-DTO: formatMode, unitSystem, separators, prefixes, roundingMode (14 fields)
+│   │   ├── DisplayConfig.java      # Display sub-DTO: colors, outline, scale/alpha refs, damageTypeColors, findColor (14 fields)
 │   │   ├── DamageInfo.java         # Per-hit: damageAmount, isCritical, subText, damageColor only
-│   │   ├── DamageContext.java      # Raw damage data from packet (victimUuid, etc.) implements FabricPacket
+│   │   ├── DamageContext.java      # Raw damage data from packet (victimUuid, SourceType, etc.) implements FabricPacket
 │   │   └── ScreenPosition.java     # x, y, cameraDepth + depthToScale/Alpha, offsetWithDepth()
+│   ├── source/
+│   │   ├── SourceType.java         # Interface: getGeneralConfig/getFormatConfig/getDisplayConfig
+│   │   ├── LHVSourceTypes.java     # Static registry: PLAYER, ENTITY, ENVIRONMENT; lookup by enum
+│   │   ├── PlayerSourceType.java   # Implementation for SourceType.PLAYER
+│   │   ├── EntitySourceType.java   # Implementation for SourceType.ENTITY
+│   │   └── EnvironmentSourceType.java # Implementation for SourceType.ENVIRONMENT
 │   ├── enums/
-│   │   ├── SourceType.java         # PLAYER, ENTITY, ENVIRONMENT — each linked to config supplier
 │   │   ├── RenderMode.java         # MERGE, ALL, LATEST
 │   │   ├── FormatMode.java         # SCIENTIFIC, UNIT, AUTO, RAW — each has Supplier<DamageFormatter>
 │   │   └── UnitSystem.java         # SHORT_SCALE, METRIC_PREFIX, LONG_SCALE
@@ -94,11 +99,14 @@ grainalcohol.lhv/
 │       ├── ColorUtil.java          # Color manipulation helpers (lerp, luminance, brightness)
 │       └── FovCache.java           # Cached FOV tanHalf values for projection
 ├── config/
-│   ├── PlayerConfig.java           # YACL config for SourceType.PLAYER (saved to config/lhv/player.json5)
-│   ├── EntityConfig.java           # YACL config for SourceType.ENTITY (saved to config/lhv/entity.json5)
-│   ├── EnvConfig.java              # YACL config for SourceType.ENVIRONMENT (saved to config/lhv/env.json5)
-│   ├── GlobalConfig.java           # Global YACL settings (bigNumberTestMode, ignoreDamageTypes)
-│   └── LHVConfigSupplier.java      # Interface: toConfig() → LHVConfig
+│   ├── PlayerConfig.java           # YACL config → PlayerSourceType (saved to config/lhv/player.json5)
+│   ├── EntityConfig.java           # YACL config → EntitySourceType (saved to config/lhv/entity.json5)
+│   ├── EnvConfig.java              # YACL config → EnvironmentSourceType (saved to config/lhv/env.json5)
+│   ├── GlobalConfig.java           # Global YACL settings (bigNumberTestMode, ignoreDamageTypes, shouldIgnore)
+│   └── LHVConfigSupplier.java      # Interface: getGeneralConfig/getFormatConfig/getDisplayConfig/clearCache
+├── internal/
+│   ├── LHVGlyphRenderer.java       # Interface for glyph render mixin
+│   └── CriticalArgController.java  # Critical argument control
 └── mixin/
     ├── DamageSourceMixin.java      # Server-side damage source tracking
     ├── LivingEntityMixin.java      # Server-side entity death hook
@@ -116,16 +124,16 @@ grainalcohol.lhv/
 ```
 Server → Packet → ClientPacketHandler
   → DamageRouter.handleDamage(DamageContext)
-    → ignoreType / world/player null checks
+    → GlobalConfig.shouldIgnore / world/player null checks
     → entity = ((WorldEntityLookupInvoker) client.world).invokeGetEntityLookup().get(victimUuid)
     → isInReceiveRange filter (max distance only)
-    → LHVModClient.findDamageColor / SubTextProviders.compute
+    → displayConfig.findColor / SubTextProviders.compute
     → creates DamageInfo (per-hit only: damageAmount, isCritical, subText, damageColor)
     → Router.handleDamage(SourceType, UUID, victimYaw, worldPos, DamageInfo)
       → MANAGERS.computeIfAbsent(uuid) → new RendererManagerImpl(verticalOffset, victimYaw, worldPos)
         → manager.handleDamage(sourceType, victimYaw, worldPos, damageInfo)
           → latestWorldPos/latestYaw = current values
-          → RENDERERS.computeIfAbsent(sourceType, k → config.createRenderer())
+          → RENDERERS.computeIfAbsent(sourceType, k → generalConfig.createRenderer(sourceType))
           → renderer.handleDamage(damageInfo)
             → handler.accept(damageInfo.getDamageAmount(), damageInfo.isCritical())
             → mainSlot.setText(getStyledDamage(damageInfo.getDamageColor()))
@@ -165,7 +173,7 @@ HudRenderCallback → DamageRouter.render(DrawContext, tickDelta)
 ### Three-Layer Render Order (newest on top)
 
 | Layer | Structure | Order |
-|---|---|---|---|
+|---|---|---|
 | ListRenderer | `TreeMap<Long, SingleRenderer>` | Keyed by `Util.getMeasuringTimeMs()`, ascending → newest last |
 | RendererManagerImpl | `LinkedHashSet<SourceType> RENDERER_ORDER` | `remove + add` on each `handleDamage` → newest SourceType last |
 | DamageRouter | `HashMap<UUID, RendererManager>` | No ordering (random) |
@@ -191,15 +199,15 @@ HudRenderCallback → DamageRouter.render(DrawContext, tickDelta)
 
 ## Config System
 
-Three per-source-type configs (PlayerConfig, EntityConfig, EnvConfig) implement `LHVConfigSupplier` and produce `LHVConfig` instances. Each YACL config has 31 fields organized in four categories, mirrored in `LHVConfig`:
+Three per-source-type configs (PlayerConfig, EntityConfig, EnvConfig) implement `LHVConfigSupplier` and expose three sub-DTOs. Each YACL config has 31 fields organized in four categories:
 
 - **General** (12): `renderMode`, `minVisibleRange`, `maxVisibleRange`, `trackEntity`, `retainWhenOffScreen`, `displayDuration`, `maxReceiveRange`, `screenOffsetRangeX/Y`, `offsetRangeX/Y/Z`
 - **Format** (14): `formatMode`, `retainDecimalPlaces`, `infinityDisplay`, `nanDisplay`, `unitSystem`, `useGrouping`, `groupingSeparator`, `decimalSeparator`, `exponentSeparator`, `positivePrefix`, `negativePrefix`, `positiveSuffix`, `negativeSuffix`, `roundingMode`
-- **Custom** (15): `killDisplay`, `defaultColor`, `criticalColor`, `criticalFormat`, `outlineEnable`, `outlineColor`, `outlineWidth`, `depthToScaleRef`, `minScale`, `maxScale`, `depthToAlphaRef`, `minAlpha`, `maxAlpha`, `punchyEffectEnable`, `damageTypeColors` (`Map<String, String>`, 40+ default entries keyed by damage type ID)
+- **Display** (15): `killDisplay`, `defaultColor`, `criticalColor`, `criticalFormatTemplate`, `outlineEnable`, `outlineColor`, `outlineWidth`, `depthToScaleRef`, `minScale`, `maxScale`, `depthToAlphaRef`, `minAlpha`, `maxAlpha`, `punchyEffectEnable`, `damageTypeColors` (`Map<String, String>`, 40+ default entries keyed by damage type ID)
 
 `GlobalConfig` stores `bigNumberTestMode: boolean` and `ignoreDamageTypes: Set<String>` (default: `minecraft:out_of_world`, `minecraft:in_wall`, `minecraft:cramming`) at `config/lhv/global.json5`.
 
-`SourceType` enum links each type to its config supplier: `PLAYER(PlayerConfig::getConfig)` → `LHVConfig`.
+`SourceType` interface links each type to its config supplier: `PLAYER(PlayerConfig::getConfig)` → `GeneralConfig`/`FormatConfig`/`DisplayConfig`. `LHVSourceTypes` provides static lookup.
 
 All fields are actively consumed in render/format paths.
 
@@ -208,8 +216,6 @@ All fields are actively consumed in render/format paths.
 - No Javadoc on implementation methods unless explicitly required; code is self-documenting
 - `@Contract`, `@NotNull`, `@Nullable` from JetBrains annotations
 - Lombok `@Getter`, `@AllArgsConstructor` on DTOs
-- Record types for value objects (`ScreenPosition`)
-- Mixin method prefix best practice: `lhv$` for all Mixin-added methods
 - `@Unique` on all Mixin-added members
 - No wildcard imports; explicit imports throughout
 - Don't add `AGENTS.md` or any `*.md` documentation unless explicitly requested

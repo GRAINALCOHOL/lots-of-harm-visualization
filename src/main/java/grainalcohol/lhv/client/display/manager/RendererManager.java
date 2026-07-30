@@ -1,7 +1,7 @@
 package grainalcohol.lhv.client.display.manager;
 
 import grainalcohol.lhv.common.dto.DamageInfo;
-import grainalcohol.lhv.common.enums.SourceType;
+import grainalcohol.lhv.common.source.SourceType;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.math.Vec3d;
 

@@ -6,7 +6,7 @@ import grainalcohol.lhv.client.display.manager.RendererManagerImpl;
 import grainalcohol.lhv.client.subtext.SubTextProviders;
 import grainalcohol.lhv.common.dto.DamageContext;
 import grainalcohol.lhv.common.dto.DamageInfo;
-import grainalcohol.lhv.common.enums.SourceType;
+import grainalcohol.lhv.common.source.SourceType;
 import grainalcohol.lhv.config.GlobalConfig;
 import grainalcohol.lhv.mixin.accessor.WorldEntityLookupInvoker;
 import net.minecraft.client.MinecraftClient;
@@ -25,6 +25,19 @@ import java.util.stream.Stream;
 public class DamageRouter {
     private final Map<UUID, RendererManager> MANAGERS = new HashMap<>();
 
+    public RendererManager getManager(UUID victimUuid) {
+        return MANAGERS.get(victimUuid);
+    }
+
+    public RendererManager initForVictim(UUID victimUuid, float victimYaw, Vec3d worldPos) {
+        return MANAGERS.computeIfAbsent(
+                victimUuid,
+                k -> new RendererManagerImpl(
+                        LHVModClient.computeVerticalOffset(k),
+                        victimYaw, worldPos)
+        );
+    }
+
     public void handleDamage(
             @NotNull final SourceType sourceType,
             @NotNull final UUID victimUuid,
@@ -32,16 +45,15 @@ public class DamageRouter {
             @NotNull final Vec3d worldPos,
             @NotNull final DamageInfo damageInfo
     ) {
-        MANAGERS.computeIfAbsent(
+        initForVictim(
                 victimUuid,
-                k -> new RendererManagerImpl(
-                        LHVModClient.computeVerticalOffset(k),
-                        victimYaw, worldPos)
+                victimYaw,
+                worldPos
         ).handleDamage(sourceType, victimYaw, worldPos, damageInfo);
     }
 
     public void handleDamage(@NotNull final DamageContext damageContext) {
-        if (LHVModClient.isIgnoreType(damageContext.getDamageTypeId())) return;
+        if (GlobalConfig.shouldIgnore(damageContext.getDamageTypeId())) return;
 
         var client = MinecraftClient.getInstance();
         if (client.world == null || client.player == null) return;
@@ -51,7 +63,7 @@ public class DamageRouter {
         var entity = ((WorldEntityLookupInvoker) client.world).invokeGetEntityLookup().get(damageContext.getVictimUuid());
         if (entity == null) return;
 
-        if (!sourceType.getConfig().isInReceiveRange(
+        if (!sourceType.getGeneralConfig().isInReceiveRange(
                 entity.getPos(),
                 client.player.getPos()
         )) return;
@@ -60,7 +72,7 @@ public class DamageRouter {
                 (GlobalConfig.getInstance().infinityTestMode ? Double.POSITIVE_INFINITY : damageContext.getDamageAmount() + (GlobalConfig.getInstance().bigNumberTestMode ? Math.random() * 10000000000L : 0)),
                 damageContext.isCritical(),
                 SubTextProviders.compute(damageContext),
-                LHVModClient.findDamageColor(sourceType.getConfig(), damageContext.getDamageTypeId())
+                sourceType.getDisplayConfig().findColor(damageContext.getDamageTypeId())
         );
 
         handleDamage(

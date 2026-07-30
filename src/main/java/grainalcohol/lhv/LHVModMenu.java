@@ -64,7 +64,7 @@ public class LHVModMenu implements ModMenuApi {
             var handler = PlayerConfig.HANDLER;
             return buildConfigScreen(handler, "lhv.config.player.title", () -> {
                 handler.save();
-                PlayerConfig.setConfig(handler.instance().toConfig());
+                handler.instance().clearCache();
             });
         }
 
@@ -72,7 +72,7 @@ public class LHVModMenu implements ModMenuApi {
             var handler = EntityConfig.HANDLER;
             return buildConfigScreen(handler, "lhv.config.entity.title", () -> {
                 handler.save();
-                EntityConfig.setConfig(handler.instance().toConfig());
+                handler.instance().clearCache();
             });
         }
 
@@ -80,7 +80,7 @@ public class LHVModMenu implements ModMenuApi {
             var handler = EnvConfig.HANDLER;
             return buildConfigScreen(handler, "lhv.config.env.title", () -> {
                 handler.save();
-                EnvConfig.setConfig(handler.instance().toConfig());
+                handler.instance().clearCache();
             });
         }
 

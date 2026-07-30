@@ -1,6 +1,6 @@
 package grainalcohol.lhv.common.format.unit;
 
-import grainalcohol.lhv.common.enums.SourceType;
+import grainalcohol.lhv.common.enums.UnitSystem;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -27,9 +27,8 @@ public interface Units {
         return BigDecimal.TEN.pow(pow);
     }
 
-    static String applyFormat(SourceType sourceType, BigDecimal value, DecimalFormat decimalFormat) {
-        var config = sourceType.getConfig();
-        for (DecimalUnit unit : config.getUnitSystem().getUnits()) {
+    static String applyFormat(UnitSystem unitSystem, BigDecimal value, DecimalFormat decimalFormat) {
+        for (DecimalUnit unit : unitSystem.getUnits()) {
             if (value.compareTo(unit.getSize()) >= 0) {
                 return unit.format(value, decimalFormat);
             }

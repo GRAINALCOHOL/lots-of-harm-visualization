@@ -5,9 +5,12 @@ import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import dev.isxander.yacl3.config.v2.api.autogen.*;
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import grainalcohol.lhv.LHVMod;
-import grainalcohol.lhv.common.dto.LHVConfig;
+import grainalcohol.lhv.client.LHVModClient;
+import grainalcohol.lhv.common.dto.DisplayConfig;
+import grainalcohol.lhv.common.dto.FormatConfig;
+import grainalcohol.lhv.common.dto.GeneralConfig;
 import grainalcohol.lhv.common.enums.*;
-import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.RoundingMode;
 
@@ -22,8 +25,9 @@ public class EntityConfig implements LHVConfigSupplier {
                     .build())
             .build();
 
-    @Getter
-    private static LHVConfig config;
+    private GeneralConfig generalConfigCache;
+    private FormatConfig formatConfigCache;
+    private DisplayConfig displayConfigCache;
 
     // region general
     @SerialEntry(comment = "显示模式：MERGE（合并）、LATEST（最新）、ALL（全部）")
@@ -246,111 +250,107 @@ public class EntityConfig implements LHVConfigSupplier {
     })
     public RoundingMode roundingMode = RoundingMode.DOWN;
 
-    // region custom
+    // region display
     @SerialEntry(comment = "击杀实体时额外显示的内容，留空则不显示")
-    @AutoGen(category = "custom")
+    @AutoGen(category = "display")
     @StringField
     @CustomName("lhv.config.killDisplay")
     @CustomDescription("lhv.config.killDisplay.desc")
     public String killDisplay = "";
 
     @SerialEntry(comment = "默认伤害颜色（#RRGGBB）")
-    @AutoGen(category = "custom")
+    @AutoGen(category = "display")
     @StringField
     @CustomName("lhv.config.defaultColor")
     @CustomDescription("lhv.config.defaultColor.desc")
     public String defaultColor = "#303030";
 
     @SerialEntry(comment = "暴击伤害颜色（#RRGGBB）")
-    @AutoGen(category = "custom")
+    @AutoGen(category = "display")
     @StringField
     @CustomName("lhv.config.criticalColor")
     @CustomDescription("lhv.config.criticalColor.desc")
     public String criticalColor = "#FF0000";
 
     @SerialEntry(comment = "暴击时的格式化模板，%s为伤害数值占位符")
-    @AutoGen(category = "custom")
+    @AutoGen(category = "display")
     @StringField
     @CustomName("lhv.config.criticalFormatTemplate")
     @CustomDescription("lhv.config.criticalFormatTemplate.desc")
-    public String criticalFormat = "%s!!";
+    public String criticalFormatTemplate = "%s!!";
 
     @SerialEntry(comment = "是否启用文字描边")
-    @AutoGen(category = "custom")
+    @AutoGen(category = "display")
     @TickBox
     @CustomName("lhv.config.outlineEnable")
     @CustomDescription("lhv.config.outlineEnable.desc")
     public boolean outlineEnable = true;
 
     @SerialEntry(comment = "描边颜色（#RRGGBB）")
-    @AutoGen(category = "custom")
+    @AutoGen(category = "display")
     @StringField
     @CustomName("lhv.config.outlineColor")
     @CustomDescription("lhv.config.outlineColor.desc")
     public String outlineColor = "#000000";
 
     @SerialEntry(comment = "描边宽度（像素）")
-    @AutoGen(category = "custom")
+    @AutoGen(category = "display")
     @FloatSlider(min = 0f, max = 5f, step = 0.1f)
     @CustomName("lhv.config.outlineWidth")
     @CustomDescription("lhv.config.outlineWidth.desc")
     public float outlineWidth = 0.8f;
 
     @SerialEntry(comment = "随深度缩放的参考距离（米），此距离下缩放比例为100%")
-    @AutoGen(category = "custom")
+    @AutoGen(category = "display")
     @FloatSlider(min = 0.1f, max = 50f, step = 0.5f)
     @CustomName("lhv.config.depthToScaleRef")
     @CustomDescription("lhv.config.depthToScaleRef.desc")
     public float depthToScaleRef = 10f;
 
     @SerialEntry(comment = "最小缩放倍率")
-    @AutoGen(category = "custom")
+    @AutoGen(category = "display")
     @FloatSlider(min = 0.1f, max = 1f, step = 0.1f)
     @CustomName("lhv.config.minScale")
     @CustomDescription("lhv.config.minScale.desc")
     public float minScale = 0.6f;
 
     @SerialEntry(comment = "最大缩放倍率")
-    @AutoGen(category = "custom")
+    @AutoGen(category = "display")
     @FloatSlider(min = 1f, max = 5f, step = 0.1f)
     @CustomName("lhv.config.maxScale")
     @CustomDescription("lhv.config.maxScale.desc")
     public float maxScale = 2.5f;
 
     @SerialEntry(comment = "随深度不透明的参考距离（米），此距离下不透明度为指定的最大不透明度")
-    @AutoGen(category = "custom")
+    @AutoGen(category = "display")
     @FloatSlider(min = 0.1f, max = 50f, step = 0.5f)
     @CustomName("lhv.config.depthToAlphaRef")
     @CustomDescription("lhv.config.depthToAlphaRef.desc")
     public float depthToAlphaRef = 2f;
 
     @SerialEntry(comment = "最小不透明度")
-    @AutoGen(category = "custom")
+    @AutoGen(category = "display")
     @FloatSlider(min = 0f, max = 1f, step = 0.05f)
     @CustomName("lhv.config.minAlpha")
     @CustomDescription("lhv.config.minAlpha.desc")
     public float minAlpha = 0.8f;
 
     @SerialEntry(comment = "最大不透明度，指定大于1的数是无意义的")
-    @AutoGen(category = "custom")
+    @AutoGen(category = "display")
     @FloatSlider(min = 0f, max = 1f, step = 0.05f)
     @CustomName("lhv.config.maxAlpha")
     @CustomDescription("lhv.config.maxAlpha.desc")
     public float maxAlpha = 1f;
 
     @SerialEntry(comment = "是否启用更具打击感的文本动画")
-    @AutoGen(category = "custom")
+    @AutoGen(category = "display")
     @TickBox
     @CustomName("lhv.config.punchyEffectEnable")
     @CustomDescription("lhv.config.punchyEffectEnable.desc")
     public boolean punchyEffectEnable = false;
 
     @SerialEntry(comment = "在此处为任意伤害类型定制颜色")
-    public Map<String, String> damageTypeColors = LHVConfig.getDefaultColors();
-
-    public static void setConfig(LHVConfig config) {
-        EntityConfig.config = config;
-    }
+    public Map<String, String> damageTypeColors = LHVModClient.getDefaultColors();
 
     public static EntityConfig getInstance() {
         return HANDLER.instance();
@@ -358,54 +358,81 @@ public class EntityConfig implements LHVConfigSupplier {
 
     public static void load() {
         HANDLER.load();
-        setConfig(getInstance().toConfig());
     }
 
     @Override
-    public LHVConfig toConfig() {
-        return new LHVConfig(
-                renderMode,
-                damageSortMode,
-                minVisibleRange,
-                maxVisibleRange,
-                trackEntity,
-                retainWhenOffScreen,
-                displayDuration,
-                maxReceiveRange,
-                screenOffsetRangeX,
-                screenOffsetRangeY,
-                offsetRangeX,
-                offsetRangeY,
-                offsetRangeZ,
-                formatMode,
-                retainDecimalPlaces,
-                infinityDisplay,
-                nanDisplay,
-                unitSystem,
-                useGrouping,
-                groupingSeparator.charAt(0),
-                decimalSeparator.charAt(0),
-                exponentSeparator,
-                positivePrefix,
-                negativePrefix,
-                positiveSuffix,
-                negativeSuffix,
-                roundingMode,
-                killDisplay,
-                defaultColor,
-                criticalColor,
-                criticalFormat,
-                outlineEnable,
-                outlineColor,
-                outlineWidth,
-                depthToScaleRef,
-                minScale,
-                maxScale,
-                depthToAlphaRef,
-                minAlpha,
-                maxAlpha,
-                punchyEffectEnable,
-                damageTypeColors
-        );
+    public @NotNull GeneralConfig getGeneralConfig() {
+        if (this.generalConfigCache == null) {
+            generalConfigCache = new GeneralConfig(
+                    renderMode,
+                    damageSortMode,
+                    displayDuration,
+                    trackEntity,
+                    retainWhenOffScreen,
+                    punchyEffectEnable,
+                    maxReceiveRange,
+                    minVisibleRange,
+                    maxVisibleRange,
+                    screenOffsetRangeX,
+                    screenOffsetRangeY,
+                    offsetRangeX,
+                    offsetRangeY,
+                    offsetRangeZ
+            );
+        }
+        return generalConfigCache;
+    }
+
+    @Override
+    public @NotNull FormatConfig getFormatConfig() {
+        if (this.formatConfigCache == null) {
+            formatConfigCache = new FormatConfig(
+                    formatMode,
+                    unitSystem,
+                    roundingMode,
+                    retainDecimalPlaces,
+                    infinityDisplay,
+                    nanDisplay,
+                    useGrouping,
+                    groupingSeparator.charAt(0),
+                    decimalSeparator.charAt(0),
+                    exponentSeparator,
+                    positivePrefix,
+                    negativePrefix,
+                    positiveSuffix,
+                    negativeSuffix
+            );
+        }
+        return formatConfigCache;
+    }
+
+    @Override
+    public @NotNull DisplayConfig getDisplayConfig() {
+        if (this.displayConfigCache == null) {
+            displayConfigCache = new DisplayConfig(
+                    killDisplay,
+                    defaultColor,
+                    criticalColor,
+                    criticalFormatTemplate,
+                    outlineEnable,
+                    outlineColor,
+                    outlineWidth,
+                    depthToScaleRef,
+                    minScale,
+                    maxScale,
+                    depthToAlphaRef,
+                    minAlpha,
+                    maxAlpha,
+                    damageTypeColors
+            );
+        }
+        return displayConfigCache;
+    }
+
+    @Override
+    public void clearCache() {
+        this.generalConfigCache = null;
+        this.formatConfigCache = null;
+        this.displayConfigCache = null;
     }
 }

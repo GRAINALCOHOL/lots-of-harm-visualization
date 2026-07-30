@@ -1,7 +1,8 @@
 package grainalcohol.lhv.common.dto;
 
-import grainalcohol.lhv.common.enums.SourceType;
 import grainalcohol.lhv.common.network.DamageS2CPacket;
+import grainalcohol.lhv.common.source.SourceType;
+import grainalcohol.lhv.common.source.LHVSourceTypes;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
@@ -25,7 +26,7 @@ public class DamageContext implements FabricPacket {
 
     @Override
     public void write(PacketByteBuf buf) {
-        buf.writeEnumConstant(sourceType);
+        buf.writeIdentifier(sourceType.getId());
         buf.writeDouble(damageAmount);
         buf.writeBoolean(isCritical);
         buf.writeUuid(victimUuid);
@@ -39,7 +40,7 @@ public class DamageContext implements FabricPacket {
     }
 
     public static DamageContext read(PacketByteBuf buf) {
-        SourceType sourceType = buf.readEnumConstant(SourceType.class);
+        SourceType sourceType = LHVSourceTypes.getSourceType(buf.readIdentifier());
         double damageAmount = buf.readDouble();
         boolean isCritical = buf.readBoolean();
         UUID victimUuid = buf.readUuid();

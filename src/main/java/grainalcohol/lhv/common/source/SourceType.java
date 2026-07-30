@@ -1,16 +1,14 @@
-package grainalcohol.lhv.config;
+package grainalcohol.lhv.common.source;
 
 import grainalcohol.lhv.common.dto.DisplayConfig;
 import grainalcohol.lhv.common.dto.FormatConfig;
 import grainalcohol.lhv.common.dto.GeneralConfig;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.util.Identifier;
 
-public interface LHVConfigSupplier {
-    @NotNull
+public interface SourceType {
+    Identifier getId();
+
     GeneralConfig getGeneralConfig();
-    @NotNull
     FormatConfig getFormatConfig();
-    @NotNull
     DisplayConfig getDisplayConfig();
-     void clearCache();
 }
