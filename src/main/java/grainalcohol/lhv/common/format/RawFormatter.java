@@ -1,18 +1,16 @@
 package grainalcohol.lhv.common.format;
 
-import grainalcohol.lhv.common.dto.FormatConfig;
-
-import java.math.BigDecimal;
+import grainalcohol.lhv.common.dto.DecimalValue;
+import grainalcohol.lhv.common.dto.config.FormatConfig;
+import org.jetbrains.annotations.NotNull;
 
 public class RawFormatter extends DamageFormatter {
-    public static final RawFormatter INSTANCE = new RawFormatter();
-
-    @Override
-    String applyFormat(FormatConfig formatConfig, BigDecimal value) {
-        return this.rawFormat(formatConfig, value);
+    public RawFormatter(@NotNull FormatConfig formatConfig) {
+        super(formatConfig);
     }
 
-    public static RawFormatter getInstance() {
-        return INSTANCE;
+    @Override
+    String applyFormat(DecimalValue value) {
+        return this.rawFormat(value.asBigDecimal());
     }
 }

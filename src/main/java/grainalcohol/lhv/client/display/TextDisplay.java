@@ -27,6 +27,7 @@ import org.joml.Matrix4f;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class TextDisplay {
     private final long creationTimeMs = Util.getMeasuringTimeMs();
@@ -44,8 +45,8 @@ public class TextDisplay {
     private float textAlpha;
     private int textRgb;
     // 这两个scale是纯信息量，仅在变换矩阵时应用即可，否则变换将被重复应用两次
-    private float widthScale;
-    private float heightScale;
+    private float textWidthScale;
+    private float textHeightScale;
 
     // outline
     private boolean outline;
@@ -73,8 +74,8 @@ public class TextDisplay {
 
         this.screenX = MinecraftClient.getInstance().getWindow().getScaledWidth() / 2f;
         this.screenY = MinecraftClient.getInstance().getWindow().getScaledHeight() / 2f;
-        this.widthScale = 1f;
-        this.heightScale = 1f;
+        this.textWidthScale = 1f;
+        this.textHeightScale = 1f;
 
         this.cachedOrderedText = Text.literal(text.getString()).styled(
                 style -> style.withFont(fontId)
@@ -90,8 +91,8 @@ public class TextDisplay {
 
         this.screenX = MinecraftClient.getInstance().getWindow().getScaledWidth() / 2f;
         this.screenY = MinecraftClient.getInstance().getWindow().getScaledHeight() / 2f;
-        this.widthScale = 1f;
-        this.heightScale = 1f;
+        this.textWidthScale = 1f;
+        this.textHeightScale = 1f;
 
         this.cachedOrderedText = Text.literal(text.getString()).styled(
                 style -> style.withFont(fontId)
@@ -125,8 +126,8 @@ public class TextDisplay {
         float clampedY = this.screenY;
 
         // 利用scale参数直接计算视觉效果值，而不是应用到实际值
-        float halfW = textWidth * this.widthScale * 0.5f;
-        float halfH = textHeight * this.heightScale * 0.5f;
+        float halfW = textWidth * this.textWidthScale * 0.5f;
+        float halfH = textHeight * this.textHeightScale * 0.5f;
 
         if (clampedX - halfW < 0)       clampedX = halfW;
         if (clampedX + halfW > screenW) clampedX = screenW - halfW;
@@ -136,7 +137,7 @@ public class TextDisplay {
         var matrices = drawContext.getMatrices();
         matrices.push();
         matrices.translate(clampedX, clampedY, 0);
-        matrices.scale(this.widthScale, this.heightScale, 1f);
+        matrices.scale(this.textWidthScale, this.textHeightScale, 1f);
         matrices.translate(-clampedX, -clampedY, 0);
 
         var ctx = new DisplayContext(
@@ -304,6 +305,19 @@ public class TextDisplay {
         return this;
     }
 
+    public <E extends Effect> Optional<Effect> getOrPutEffect(Class<E> effectClass, E effect) {
+        return this.getOrPutEffect(effectClass, effect, true);
+    }
+
+    public <E extends Effect> Optional<Effect> getOrPutEffect(Class<E> effectClass, E effect, boolean enable) {
+        if (this.effectMap.containsKey(effectClass)) {
+            return Optional.of(this.effectMap.get(effectClass));
+        } else {
+            this.addEffect(effect, enable);
+            return Optional.empty();
+        }
+    }
+
     public TextDisplay setCurrentText(StyledText text) {
         this.text = text.getString();
         this.textRgb = text.getRgb();
@@ -324,22 +338,34 @@ public class TextDisplay {
         return this;
     }
 
-    public TextDisplay setScale(float widthScale, float verticalScale) {
-        this.widthScale = widthScale;
-        this.heightScale = verticalScale;
+    public TextDisplay multiplyAlpha(float multiplier) {
+        this.textAlpha *= multiplier;
+        return this;
+    }
+
+    public TextDisplay setScale(float scale) {
+        return this.setScale(scale, scale);
+    }
+
+    public TextDisplay multiplyScale(float multiplier) {
+        return this.multiplyScale(multiplier, multiplier);
+    }
+
+    public TextDisplay setScale(float widthScale, float heightScale) {
+        this.textWidthScale = widthScale;
+        this.textHeightScale = heightScale;
+        return this;
+    }
+
+    public TextDisplay multiplyScale(float widthMultiplier, float heightMultiplier) {
+        this.textWidthScale *= widthMultiplier;
+        this.textHeightScale *= heightMultiplier;
         return this;
     }
 
     public TextDisplay setScreenPosition(ScreenPosition screenPosition) {
-        this.screenX = (float) screenPosition.x();
-        this.screenY = (float) screenPosition.y();
-        return this;
-    }
-
-    public TextDisplay setScreenPosWithScale(ScreenPosition screenPosition) {
-        this.setScreenPosition(screenPosition);
-        float textScale = (float) screenPosition.depthToScale();
-        this.setScale(textScale, textScale);
+        this.screenX = screenPosition.x();
+        this.screenY = screenPosition.y();
         return this;
     }
 

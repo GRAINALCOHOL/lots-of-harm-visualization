@@ -38,6 +38,28 @@ public class ColorUtil {
         return (r << 16) | (g << 8) | b;
     }
 
+    /**
+     * 将颜色按指定比例向白色（或黑色）线性混合，等价于对每个通道在原值与 255 之间做
+     * 线性插值（lerp），而非调整 HSL/HSV 的亮度：
+     * <pre>
+     * new = c + (255 - c) × factor
+     * </pre>
+     * 其中 {@code c} 为单个通道（0-255）的原值。
+     * <ul>
+     *   <li>{@code factor = 0}：颜色不变</li>
+     *   <li>{@code factor = 1}：变为纯白（255）</li>
+     *   <li>{@code factor = 0.2}：每个通道向白色靠近 20%，等价于 {@link #lerp}
+     *       以 {@code t = 0.2} 向白色插值</li>
+     *   <li>{@code factor < 0}：向黑色方向混合，但不对结果做 0 截断，暗色通道可能
+     *       变为负数，一般仅在 {@code factor ≥ 0} 时使用</li>
+     * </ul>
+     * 结果通道值经 {@code int} 强转（向零截断）。
+     *
+     * @param rgb    24位 RGB 颜色值，格式为 0xRRGGBB
+     * @param factor 混合比例，必须在 [-1, 1] 之间；正值向白色混合，负值向黑色混合
+     * @return 混合后的 24位 RGB 颜色值
+     * @throws IllegalArgumentException 当 {@code factor} 超出 [-1, 1] 时
+     */
     public static int brightness(int rgb, float factor) {
         if (factor < -1f || factor > 1f) {
             throw new IllegalArgumentException("Factor must be between -1 and 1");

@@ -277,6 +277,9 @@ public class ScreenUtil {
             return null;
         }
 
-        return new ScreenPosition((float) screenX, (float) screenY, (float) cameraDepth);
+        // 把 FOV 缩放直接烘焙进 cameraDepth（除以放大系数），下游自动感知，无需再单独乘放大系数
+        // cameraDepth 语义随之变为"缩放后的可见深度"
+        return new ScreenPosition((float) screenX, (float) screenY,
+                (float) (cameraDepth / FovCache.getZoomMagnification()));
     }
 }

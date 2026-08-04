@@ -3,7 +3,8 @@ package grainalcohol.lhv.client.display;
 import grainalcohol.lhv.client.LHVModClient;
 import grainalcohol.lhv.client.display.manager.RendererManager;
 import grainalcohol.lhv.client.display.manager.RendererManagerImpl;
-import grainalcohol.lhv.client.subtext.SubTextProviders;
+import grainalcohol.lhv.client.text.TextProviders;
+import grainalcohol.lhv.client.wrapper.StyledText;
 import grainalcohol.lhv.common.dto.DamageContext;
 import grainalcohol.lhv.common.dto.DamageInfo;
 import grainalcohol.lhv.common.source.SourceType;
@@ -16,10 +17,7 @@ import net.minecraft.client.option.GameOptions;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class DamageRouter {
@@ -29,27 +27,30 @@ public class DamageRouter {
         return MANAGERS.get(victimUuid);
     }
 
-    public RendererManager initForVictim(UUID victimUuid, float victimYaw, Vec3d worldPos) {
-        return MANAGERS.computeIfAbsent(
-                victimUuid,
-                k -> new RendererManagerImpl(
-                        LHVModClient.computeVerticalOffset(k),
-                        victimYaw, worldPos)
+    public void initForVictim(UUID victimUuid, float victimYaw, Vec3d worldPos) {
+        MANAGERS.putIfAbsent(victimUuid,
+                new RendererManagerImpl(
+                        LHVModClient.computeVerticalOffset(victimUuid),
+                        victimYaw,
+                        worldPos
+                )
         );
     }
 
     public void handleDamage(
             @NotNull final SourceType sourceType,
             @NotNull final UUID victimUuid,
-            final float victimYaw,
-            @NotNull final Vec3d worldPos,
             @NotNull final DamageInfo damageInfo
     ) {
-        initForVictim(
-                victimUuid,
-                victimYaw,
-                worldPos
-        ).handleDamage(sourceType, victimYaw, worldPos, damageInfo);
+        MANAGERS.get(victimUuid).handleDamage(sourceType, damageInfo);
+    }
+
+    public void handleText(
+            @NotNull final SourceType sourceType,
+            @NotNull final UUID victimUuid,
+            @NotNull final List<StyledText> texts
+    ) {
+        MANAGERS.get(victimUuid).handleText(sourceType, texts);
     }
 
     public void handleDamage(@NotNull final DamageContext damageContext) {
@@ -58,12 +59,18 @@ public class DamageRouter {
         var client = MinecraftClient.getInstance();
         if (client.world == null || client.player == null) return;
 
-        SourceType sourceType = damageContext.getSourceType();
+        if (damageContext.getAttackerUuid() != null
+                && (!GlobalConfig.getInstance().receiveOtherPlayer
+                && LHVModClient.attackFromOtherPlayer(client.world, client.player, damageContext.getAttackerUuid()))
+        ) return;
 
-        var entity = ((WorldEntityLookupInvoker) client.world).invokeGetEntityLookup().get(damageContext.getVictimUuid());
+        SourceType sourceType = damageContext.getSourceType();
+        UUID victimUuid = damageContext.getVictimUuid();
+
+        var entity = ((WorldEntityLookupInvoker) client.world).invokeGetEntityLookup().get(victimUuid);
         if (entity == null) return;
 
-        if (!sourceType.getGeneralConfig().isInReceiveRange(
+        if (!sourceType.getBasicConfig().isInReceiveRange(
                 entity.getPos(),
                 client.player.getPos()
         )) return;
@@ -71,22 +78,19 @@ public class DamageRouter {
         DamageInfo damageInfo = new DamageInfo(
                 (GlobalConfig.getInstance().infinityTestMode ? Double.POSITIVE_INFINITY : damageContext.getDamageAmount() + (GlobalConfig.getInstance().bigNumberTestMode ? Math.random() * 10000000000L : 0)),
                 damageContext.isCritical(),
-                SubTextProviders.compute(damageContext),
                 sourceType.getDisplayConfig().findColor(damageContext.getDamageTypeId())
         );
 
-        handleDamage(
-                damageContext.getSourceType(),
-                damageContext.getVictimUuid(),
-                entity.getYaw(),
-                entity.getPos(),
-                damageInfo
-        );
+        initForVictim(victimUuid, entity.getYaw(), entity.getPos());
+        handleDamage(sourceType, victimUuid, damageInfo);
+        handleText(sourceType, victimUuid, TextProviders.compute(damageContext));
     }
 
     public void render(DrawContext drawContext, float tickDelta) {
         var client = MinecraftClient.getInstance();
         if (client.world == null || client.player == null) return;
+
+        if (client.currentScreen != null) return;
 
         MANAGERS.values().removeIf(RendererManager::isExpired);
         if (MANAGERS.isEmpty()) return;

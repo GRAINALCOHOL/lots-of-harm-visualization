@@ -13,15 +13,15 @@
 
   "yacl3.config.lhv:global_config.category.global": "§e全局设置§r",
 
-  "yacl3.config.lhv:player_config.category.general": "§d基本设置§r",
+  "yacl3.config.lhv:player_config.category.basic": "§d基本设置§r",
   "yacl3.config.lhv:player_config.category.format": "§b格式化设置§r",
   "yacl3.config.lhv:player_config.category.display": "§a显示设置§r",
 
-  "yacl3.config.lhv:entity_config.category.general": "§d基本设置§r",
+  "yacl3.config.lhv:entity_config.category.basic": "§d基本设置§r",
   "yacl3.config.lhv:entity_config.category.format": "§b格式化设置§r",
   "yacl3.config.lhv:entity_config.category.display": "§a显示设置§r",
 
-  "yacl3.config.lhv:env_config.category.general": "§d基本设置§r",
+  "yacl3.config.lhv:env_config.category.basic": "§d基本设置§r",
   "yacl3.config.lhv:env_config.category.format": "§b格式化设置§r",
   "yacl3.config.lhv:env_config.category.display": "§a显示设置§r",
 
@@ -145,8 +145,11 @@
   "yacl3.config.enum.RoundingMode.half_even": "HALF_EVEN（银行家舍入）",
   "yacl3.config.enum.RoundingMode.half_even.desc": "§6HALF_EVEN（银行家舍入）§r：恰好为 5 时向最近的偶数方向舍入，其他情况与经典四舍五入相同",
 
-  "lhv.config.killDisplay": "击杀提示",
+  "lhv.config.killDisplay": "击杀显示",
   "lhv.config.killDisplay.desc": "当伤害击杀实体时额外显示的文本，留空则不显示",
+
+  "lhv.config.instantKillDisplay": "秒杀显示",
+  "lhv.config.instantKillDisplay.desc": "当伤害秒杀（在1秒内）实体时额外显示的文本，留空则不显示",
 
   "lhv.config.defaultColor": "默认颜色",
   "lhv.config.defaultColor.desc": "伤害数字的默认颜色（#RRGGBB）",
@@ -184,9 +187,6 @@
   "lhv.config.maxAlpha": "最大不透明度",
   "lhv.config.maxAlpha.desc": "伤害数字的最大不透明度",
 
-  "lhv.config.punchyEffectEnable": "更具打击感的动画",
-  "lhv.config.punchyEffectEnable.desc": "是否启用更具打击感的伤害数字动画效果",
-
   "lhv.config.entitySortMode": "实体排序方式",
   "lhv.config.entitySortMode.desc": "多个实体的伤害数字重叠时的排序方式",
   "yacl3.config.enum.EntitySortMode.random": "随机",
@@ -202,6 +202,9 @@
   "yacl3.config.enum.SourceSortMode.latest.desc": "§6最新§r：更晚造成的伤害源覆盖更早的",
   "yacl3.config.enum.SourceSortMode.oldest": "最旧",
   "yacl3.config.enum.SourceSortMode.oldest.desc": "§6最旧§r：更早造成的伤害源覆盖更晚的",
+
+  "lhv.config.receiveOtherPlayer": "接收其他玩家伤害",
+  "lhv.config.receiveOtherPlayer.desc": "是否接收其他玩家造成的伤害信息",
 
   "lhv.config.bigNumberTestMode": "超大数字功能",
   "lhv.config.bigNumberTestMode.desc": "启用后伤害值会以较大数值显示",

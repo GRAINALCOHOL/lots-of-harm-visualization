@@ -10,6 +10,7 @@
   ],
   "client": [
     "client.FontAccess",
+    "client.GameRendererFovMixin",
     "client.GlyphRendererMixin",
     "client.GlyphRendererAccessor"
   ],

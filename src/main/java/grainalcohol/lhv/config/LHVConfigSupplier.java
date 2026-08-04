@@ -1,13 +1,13 @@
 package grainalcohol.lhv.config;
 
-import grainalcohol.lhv.common.dto.DisplayConfig;
-import grainalcohol.lhv.common.dto.FormatConfig;
-import grainalcohol.lhv.common.dto.GeneralConfig;
+import grainalcohol.lhv.common.dto.config.BasicConfig;
+import grainalcohol.lhv.common.dto.config.DisplayConfig;
+import grainalcohol.lhv.common.dto.config.FormatConfig;
 import org.jetbrains.annotations.NotNull;
 
 public interface LHVConfigSupplier {
     @NotNull
-    GeneralConfig getGeneralConfig();
+    BasicConfig getBasicConfig();
     @NotNull
     FormatConfig getFormatConfig();
     @NotNull

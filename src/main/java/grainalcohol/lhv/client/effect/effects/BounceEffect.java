@@ -31,9 +31,7 @@ public class BounceEffect extends BaseEffect {
     }
 
     @Override
-    public void apply(@NotNull DisplayContext ctx, @NotNull CharSetting setting) {
-
-    }
+    public void apply(@NotNull DisplayContext ctx, @NotNull CharSetting setting) {}
 
     @Override
     public boolean isFinished(int textLength) {

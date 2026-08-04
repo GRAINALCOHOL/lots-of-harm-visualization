@@ -40,6 +40,8 @@ public record ScreenPosition(
      * <p>
      * 距离越远（cameraDepth 越大），偏移量越小。
      * 衰减公式：{@code factor = clamp(refDist / cameraDepth, 0, 1)}
+     * <p>
+     * 结果限制在 [0, 1]，不超出配置的 screenOffset / verticalOffset。
      *
      * @param dx      参考距离下的水平偏移量（像素）
      * @param dy      参考距离下的垂直偏移量（像素）
@@ -71,7 +73,9 @@ public record ScreenPosition(
     /**
      * 根据相机深度计算缩放倍率。
      * <p>
-     * 使用反比映射：{@code setScale = clamp(refDist / cameraDepth, minScale, maxScale)}
+     * cameraDepth 已在 {@code ScreenUtil.project} 中烘焙 FOV ，于是与视觉尺寸同步。
+     * <p>
+     * 公式：{@code setScale = clamp(refDist / cameraDepth, minScale, maxScale)}
      *
      * @param refDist  参考距离，此距离下 setScale = 1.0
      * @param minScale 最小缩放（远处下限）
@@ -79,8 +83,7 @@ public record ScreenPosition(
      * @return 缩放倍率
      */
     public float depthToScale(float refDist, float minScale, float maxScale) {
-        float raw = (float) (refDist / Math.max(cameraDepth, 0.01));
-        return MathHelper.clamp(raw, minScale, maxScale);
+        return MathHelper.clamp((float) (refDist / Math.max(cameraDepth, 0.01)), minScale, maxScale);
     }
 
     public float depthToScale(float refDist) {

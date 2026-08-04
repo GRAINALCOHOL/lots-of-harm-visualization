@@ -1,9 +1,9 @@
 package grainalcohol.lhv.common.source;
 
 import grainalcohol.lhv.LHVMod;
-import grainalcohol.lhv.common.dto.DisplayConfig;
-import grainalcohol.lhv.common.dto.FormatConfig;
-import grainalcohol.lhv.common.dto.GeneralConfig;
+import grainalcohol.lhv.common.dto.config.BasicConfig;
+import grainalcohol.lhv.common.dto.config.DisplayConfig;
+import grainalcohol.lhv.common.dto.config.FormatConfig;
 import grainalcohol.lhv.config.EntityConfig;
 import net.minecraft.util.Identifier;
 
@@ -14,8 +14,8 @@ public class EntitySourceType implements SourceType {
     }
 
     @Override
-    public GeneralConfig getGeneralConfig() {
-        return EntityConfig.getInstance().getGeneralConfig();
+    public BasicConfig getBasicConfig() {
+        return EntityConfig.getInstance().getBasicConfig();
     }
 
     @Override

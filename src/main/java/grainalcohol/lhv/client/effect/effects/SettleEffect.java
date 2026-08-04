@@ -14,7 +14,7 @@ public class SettleEffect extends BaseEffect {
     private final float startScale;
 
     public SettleEffect() {
-        this(1000, 50, 2.0f);
+        this(1000, 25, 2.0f);
     }
 
     @Override

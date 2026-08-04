@@ -43,6 +43,13 @@ public class GlobalConfig {
     })
     public SourceSortMode sourceSortMode = SourceSortMode.LATEST;
 
+    @SerialEntry(comment = "是否接收其他玩家的伤害信息")
+    @AutoGen(category = "global")
+    @TickBox
+    @CustomName("lhv.config.receiveOtherPlayer")
+    @CustomDescription("lhv.config.receiveOtherPlayer.desc")
+    public boolean receiveOtherPlayer = true;
+
     @SerialEntry(comment = "大数字测试模式")
     @AutoGen(category = "global")
     @TickBox

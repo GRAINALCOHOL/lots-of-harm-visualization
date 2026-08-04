@@ -1,4 +1,4 @@
-package grainalcohol.lhv.client.display.renderer;
+package grainalcohol.lhv.client.display.renderer.damage;
 
 import grainalcohol.lhv.common.dto.DamageInfo;
 import grainalcohol.lhv.common.enums.DamageSortMode;
@@ -22,15 +22,15 @@ public class ListRenderer implements DamageRenderer {
     }
 
     @Override
-    public void handleDamage(DamageInfo damageInfo) {
+    public void setStatus(DamageInfo damageInfo) {
         var renderer = new SingleRenderer(sourceType);
-        renderer.handleDamage(damageInfo);
+        renderer.setStatus(damageInfo);
         rendererPool.add(renderer);
     }
 
     @Override
     public void render(@NotNull DrawContext drawContext, Vec3d worldPos, float yawDelta) {
-        List<SingleRenderer> renderList = computeRenderList(sourceType.getGeneralConfig().getDamageSortMode());
+        List<SingleRenderer> renderList = computeRenderList(sourceType.getBasicConfig().getDamageSortMode());
         if (renderList.isEmpty()) return;
 
         for (var renderer : renderList) {

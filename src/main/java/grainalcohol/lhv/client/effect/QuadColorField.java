@@ -35,13 +35,12 @@ public class QuadColorField {
 
     public static QuadColorField verticalGradient(int rgb) {
         // 上面变亮40%
-        // 下面变亮20%
+        // 下面变亮0%
         return new QuadColorField(
                 rgb,
                 ColorUtil.brightness(rgb, 0.4f),
                 ColorUtil.brightness(rgb, 0.4f),
-                ColorUtil.brightness(rgb, 0.2f),
-                ColorUtil.brightness(rgb, 0.2f)
+                rgb, rgb
         );
     }
 

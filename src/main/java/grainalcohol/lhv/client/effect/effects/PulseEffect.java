@@ -15,7 +15,7 @@ public class PulseEffect extends BaseEffect {
     private final int staggerMs;
 
     public PulseEffect() {
-        this(2.0f, 0.1f, 200, 25);
+        this(1.6f, 0.1f, 200, 25);
     }
 
     @Override
@@ -34,13 +34,13 @@ public class PulseEffect extends BaseEffect {
         float scale;
         if (progress < upRatio) {
             float t = progress / upRatio;
-            scale = setting.widthScale + (peak - setting.widthScale) * t;
+            scale = 1f + (peak - 1f) * t;
         } else {
             float t = (progress - upRatio) / (1f - upRatio);
-            scale = peak + (setting.widthScale - peak) * t;
+            scale = peak - (peak - 1f) * t;
         }
-        setting.widthScale = scale;
-        setting.heightScale = scale;
+        setting.widthScale *= scale;
+        setting.heightScale *= scale;
     }
 
     @Override

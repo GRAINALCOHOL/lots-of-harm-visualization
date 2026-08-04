@@ -1,7 +1,9 @@
 package grainalcohol.lhv.common.enums;
 
+import grainalcohol.lhv.common.dto.config.FormatConfig;
 import grainalcohol.lhv.common.format.*;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public enum FormatMode {
@@ -10,13 +12,13 @@ public enum FormatMode {
     AUTO(AutoFormatter::new),
     RAW(RawFormatter::new);
 
-    private final Supplier<DamageFormatter> formatterSupplier;
+    private final Function<FormatConfig, DamageFormatter> formatterFactory;
 
-    FormatMode(Supplier<DamageFormatter> formatterSupplier) {
-        this.formatterSupplier = formatterSupplier;
+    FormatMode(Function<FormatConfig, DamageFormatter> formatterFactory) {
+        this.formatterFactory = formatterFactory;
     }
 
-    public DamageFormatter createFormatter() {
-        return formatterSupplier.get();
+    public DamageFormatter createFormatter(FormatConfig formatConfig) {
+        return formatterFactory.apply(formatConfig);
     }
 }

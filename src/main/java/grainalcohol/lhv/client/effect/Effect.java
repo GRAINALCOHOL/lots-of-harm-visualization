@@ -21,6 +21,7 @@ public interface Effect {
     void pause();
     void restart();
     void reset();
+    void restartIfFinished(int textLength);
     int getHeadMs(int textLength);
     int getTailMs(int textLength);
     boolean isFinished(int textLength);

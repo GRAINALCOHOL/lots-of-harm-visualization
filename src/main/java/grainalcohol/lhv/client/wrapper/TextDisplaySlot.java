@@ -8,37 +8,28 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TextDisplaySlot {
-    @Nullable
-    private TextDisplay textDisplay;
     private final int durationMs;
-    private boolean outline;
-    private boolean rainbow;
-    private final float widthMultiplier;
-    private final float heightMultiplier;
     @Nullable
     private final TextDisplayHandler onTextCreated;
     @Nullable
     private final TextDisplayHandler onTextChanged;
-    private final float verticalOffset;
-    private final float scaleMultiplier;
+
+    @Nullable
+    private TextDisplay textDisplay;
+    private boolean outline;
+    private boolean rainbow;
+    private float widthMultiplier = 1f;
+    private float heightMultiplier = 1f;
 
     private TextDisplaySlot(
             @Nullable StyledText styledText,
             int durationMs,
-            float widthMultiplier,
-            float heightMultiplier,
             @Nullable TextDisplayHandler onTextCreated,
-            @Nullable TextDisplayHandler onTextChanged,
-            float verticalOffset,
-            float scaleMultiplier
+            @Nullable TextDisplayHandler onTextChanged
     ) {
         this.durationMs = durationMs;
-        this.widthMultiplier = widthMultiplier;
-        this.heightMultiplier = heightMultiplier;
         this.onTextCreated = onTextCreated;
         this.onTextChanged = onTextChanged;
-        this.verticalOffset = verticalOffset;
-        this.scaleMultiplier = scaleMultiplier;
         if (styledText == null) {
             this.textDisplay = null;
         } else {
@@ -46,26 +37,21 @@ public class TextDisplaySlot {
         }
     }
 
-    public static TextDisplaySlot empty(
+    public static TextDisplaySlot create(
+            @NotNull StyledText styledText,
             int durationMs,
-            float widthMultiplier,
-            float heightMultiplier,
             @Nullable TextDisplayHandler onTextCreated,
             @Nullable TextDisplayHandler onTextChanged
     ) {
-        return empty(durationMs, widthMultiplier, heightMultiplier, onTextCreated, onTextChanged, 0.0f, 1.0f);
+        return new TextDisplaySlot(styledText, durationMs, onTextCreated, onTextChanged);
     }
 
     public static TextDisplaySlot empty(
             int durationMs,
-            float widthMultiplier,
-            float heightMultiplier,
             @Nullable TextDisplayHandler onTextCreated,
-            @Nullable TextDisplayHandler onTextChanged,
-            float verticalOffset,
-            float scaleMultiplier
+            @Nullable TextDisplayHandler onTextChanged
     ) {
-        return new TextDisplaySlot(null, durationMs, widthMultiplier, heightMultiplier, onTextCreated, onTextChanged, verticalOffset, scaleMultiplier);
+        return new TextDisplaySlot(null, durationMs, onTextCreated, onTextChanged);
     }
 
     public void rainbow(boolean enable) {
@@ -106,61 +92,45 @@ public class TextDisplaySlot {
         }
     }
 
-    public void setScale(float horizontalScale, float verticalScale, float... globalMultipliers) {
-        if (this.textDisplay == null) return;
+    public void multiplyScale(float scaleMultiplier) {
+        this.multiplyWidth(scaleMultiplier);
+        this.multiplyHeight(scaleMultiplier);
+    }
 
-        float combinedMultiplier = 1.0f;
-        for (float multiplier : globalMultipliers) {
-            combinedMultiplier *= multiplier;
-        }
+    public void multiplyHeight(float heightMultiplier) {
+        this.heightMultiplier *= heightMultiplier;
+    }
+
+    public void multiplyWidth(float widthMultiplier) {
+        this.widthMultiplier *= widthMultiplier;
+    }
+
+    public void setScale(float scale) {
+        this.setScale(scale, scale);
+    }
+
+    public void setScale(float widthScale, float heightScale) {
+        if (this.textDisplay == null) return;
         this.textDisplay.setScale(
-                horizontalScale * widthMultiplier * scaleMultiplier * combinedMultiplier,
-                verticalScale * heightMultiplier * scaleMultiplier * combinedMultiplier
+                widthScale * widthMultiplier,
+                heightScale * heightMultiplier
         );
     }
 
-    public void setScreenPosition(@NotNull ScreenPosition screenPosition, float... globalMultipliers) {
+    public void setScreenPosition(@NotNull ScreenPosition screenPosition) {
         if (this.textDisplay == null) return;
-
-        float combinedMultiplier = 1.0f;
-        for (float multiplier : globalMultipliers) {
-            combinedMultiplier *= multiplier;
-        }
-        this.textDisplay.setScreenPosition(
-                screenPosition.offsetWithDepth(0.0f, this.verticalOffset * combinedMultiplier)
-        );
+        this.textDisplay.setScreenPosition(screenPosition);
     }
 
-    public void setAlpha(float alpha, float... globalMultipliers) {
+    public void setAlpha(float alpha) {
         if (this.textDisplay == null) return;
-
-        float combinedMultiplier = 1.0f;
-        for (float multiplier : globalMultipliers) {
-            combinedMultiplier *= multiplier;
-        }
-
-        this.textDisplay.setAlpha(alpha * combinedMultiplier);
+        this.textDisplay.setAlpha(alpha);
     }
 
-    public void setScreenPositionWithScale(@NotNull ScreenPosition screenPosition, float... globalMultipliers) {
+    public void multiplyAlpha(float multiplier) {
         if (this.textDisplay == null) return;
-
-        float combinedMultiplier = 1.0f;
-        for (float multiplier : globalMultipliers) {
-            combinedMultiplier *= multiplier;
-        }
-        this.textDisplay.setScreenPosition(
-                screenPosition.offsetWithDepth(0.0f, this.verticalOffset * combinedMultiplier)
-        );
-        float horizontalScale = (float) (screenPosition.depthToScale() * widthMultiplier * this.scaleMultiplier * combinedMultiplier);
-        float verticalScale = (float) (screenPosition.depthToScale() * heightMultiplier * this.scaleMultiplier * combinedMultiplier);
-        this.textDisplay.setScale(horizontalScale, verticalScale);
+        this.textDisplay.multiplyAlpha(multiplier);
     }
-
-//    public void setInvisible() {
-//        if (this.textDisplay == null) return;
-//        this.textDisplay.setScale(0f, 0f);
-//    }
 
     public void setText(@NotNull StyledText styledText) {
         if (styledText.isBlank()) return;

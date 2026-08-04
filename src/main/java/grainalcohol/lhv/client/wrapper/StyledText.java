@@ -2,6 +2,7 @@ package grainalcohol.lhv.client.wrapper;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 
 @AllArgsConstructor
@@ -23,6 +24,10 @@ public class StyledText {
         return new StyledText(text, rgb);
     }
 
+    public static StyledText literal(String text, TextColor color) {
+        return new StyledText(text, color.getRgb());
+    }
+
     public static StyledText empty() {
         return new StyledText("", 0xFFFFFF);
     }
@@ -41,5 +46,10 @@ public class StyledText {
 
     public int length() {
         return text.length();
+    }
+
+    @Override
+    public String toString() {
+        return "StyledText:" + getString() + "(" + Integer.toHexString(rgb) + ")";
     }
 }

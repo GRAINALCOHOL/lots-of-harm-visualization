@@ -61,6 +61,13 @@ public abstract class BaseEffect implements Effect {
     }
 
     @Override
+    public void restartIfFinished(int textLength) {
+        if (this.isFinished(textLength)) {
+            this.restart();
+        }
+    }
+
+    @Override
     public int getHeadMs(int textLength) {
         return 0;
     }
